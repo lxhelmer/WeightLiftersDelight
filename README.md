@@ -20,3 +20,5 @@ Hallinnointikäyttäjällä on rajattomat oikeudet.
 # Näkymät
 Päänäkymät ovat: Julkiset tulokset, profiilikohtaiset tulokset, tuloksen lisäys.
 
+
+
