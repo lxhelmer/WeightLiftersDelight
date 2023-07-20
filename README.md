@@ -11,6 +11,7 @@ Tuloksia voi seurata taulukkoina sekä kaavioina.
 Sovelluksessa on kaikille näkyvä näkymä julkisista tiedoista.
 Sovellukseen voi kirjautua sisään ja käyttäjätyyppejä on kaksi, peruskäyttäjä sekä hallinnointi käyttäjä. Peruskäyttäjän voi luoda sovelluksessa.
 Peruskäyttäjä voi hallinnoida omia tietojaan rajattomasti. Luoda, katsella, poistaa.
+Peruskäyttäjä voi lisätessä nostotapahtumaa liittää siihen tietojen lisäksi kommentin tekstimuodossa ja vaikkaa videolinkin.
 Peruskäyttäjä voi valita näkyvätkö hänen tuloksensa kaikille avoimissa julkisissa tilastoissa. Valinta voidaan tehdä tuloskohtaisesti.
 Peruskäyttäjä voi myös tarkastella muita peruskäyttäjäprofiileita joissa näkyvät näiden profiilien julkiset tulokset.
 Peruskäyttäjä voi poistaa oman tilinsä ja tietonsa profiilistaan.
