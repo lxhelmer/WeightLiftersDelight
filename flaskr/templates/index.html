@@ -1,0 +1,17 @@
+<title>WLD</title>
+<h1>Welcome to weightlifters delight</h1>
+
+<p>What do you wanna log</p>
+
+<form>
+
+<select name="Lift" id="lift">
+	{% for mov in movs %}
+	<option> {{ mov }}
+	{% endfor %}
+</select>
+weight:
+<input type="text" name="weight">
+<br>
+<input type="submit" value="add to log"
+</form>
