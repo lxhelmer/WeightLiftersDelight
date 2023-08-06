@@ -20,5 +20,31 @@ Hallinnointikäyttäjällä on rajattomat oikeudet.
 # Näkymät
 Päänäkymät ovat: Julkiset tulokset, profiilikohtaiset tulokset, tuloksen lisäys.
 
+## Ohjelman käyttö
 
+Luo virtuaaliympäristö komennolla 
+```bash 
+python3 -m venv venv
+```
 
+Asenna riippuvuuder komennolla
+```bash
+pip install -r ./requirements.txt
+```
+
+Luo tietokanta komennolla 
+```bash
+psql < schema.sql
+```
+
+Käynnistä ohjelma komennolla
+```bash
+flask --app flaskr/app run
+```
+
+## Ohjelman tila 06.08.
+
+Toiminnallisuus on alullaan. Tietokantaan voi lisätä tuloksia ja käyttöliittymä sisältää perusnäkymän jossa lisäys tehdään sekä profile välilehden
+jolla voidaan tarkastella tuloksia. Sovellus toimii tällä hetkellä one-user tilassa sillä toteutan käyttäjäkohtaisen toiminnallisuuden samalla kun teen käyttäjänhallinnan kuntoon.
+Sovellus on vähän jäljessä siitä tilasta missä sen haluaisin olevan, mutta korjaan tilanteen tällä viikolla. Tietokannan rakenne on tällä hetkellä suppea sillä en ole vielä päättänyt
+millä tavalla jaan tiedon. Tietokanta kuitenkin sisältää jo nyt suurimman osan tallennettavasta tiedosta. Sen käyttö on vain tällä hetkellä epäkäytännöllistä.
