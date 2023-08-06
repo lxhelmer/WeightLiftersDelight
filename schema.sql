@@ -21,6 +21,40 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: movements; Type: TABLE; Schema: public; Owner: helmer
+--
+
+CREATE TABLE public.movements (
+    id integer NOT NULL,
+    lift text
+);
+
+
+ALTER TABLE public.movements OWNER TO helmer;
+
+--
+-- Name: movements_id_seq; Type: SEQUENCE; Schema: public; Owner: helmer
+--
+
+CREATE SEQUENCE public.movements_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.movements_id_seq OWNER TO helmer;
+
+--
+-- Name: movements_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: helmer
+--
+
+ALTER SEQUENCE public.movements_id_seq OWNED BY public.movements.id;
+
+
+--
 -- Name: results; Type: TABLE; Schema: public; Owner: helmer
 --
 
@@ -58,10 +92,25 @@ ALTER SEQUENCE public.results_id_seq OWNED BY public.results.id;
 
 
 --
+-- Name: movements id; Type: DEFAULT; Schema: public; Owner: helmer
+--
+
+ALTER TABLE ONLY public.movements ALTER COLUMN id SET DEFAULT nextval('public.movements_id_seq'::regclass);
+
+
+--
 -- Name: results id; Type: DEFAULT; Schema: public; Owner: helmer
 --
 
 ALTER TABLE ONLY public.results ALTER COLUMN id SET DEFAULT nextval('public.results_id_seq'::regclass);
+
+
+--
+-- Name: movements movements_pkey; Type: CONSTRAINT; Schema: public; Owner: helmer
+--
+
+ALTER TABLE ONLY public.movements
+    ADD CONSTRAINT movements_pkey PRIMARY KEY (id);
 
 
 --

@@ -32,9 +32,9 @@ Asenna riippuvuuder komennolla
 pip install -r ./requirements.txt
 ```
 
-Luo tietokanta komennolla 
+Lataa tietokantarakenne tietokantaan komennolla ohjelma käyttää oletusarvona wld nimistä tietokantaa.
 ```bash
-psql < schema.sql
+psql <tietokannan nimi> < schema.sql
 ```
 
 Käynnistä ohjelma komennolla

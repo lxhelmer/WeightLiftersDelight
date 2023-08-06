@@ -3,15 +3,16 @@
 
 <p>What do you wanna log</p>
 
-<form>
-
-<select name="Lift" id="lift">
-	{% for mov in movs %}
-	<option> {{ mov }}
-	{% endfor %}
-</select>
-weight:
-<input type="text" name="weight">
-<br>
-<input type="submit" value="add to log"
+<form action="/send" method="POST">
+	<select name="lift" id="lift">
+		{% for mov in movs %}
+		<option> {{ mov[0] }}
+		{% endfor %}
+	</select>
+	weight:
+	<input type="text" name="weight">
+	<br>
+	<input type="submit" value="add to log">
 </form>
+
+<a href="/profile">Profiiliin</a>
