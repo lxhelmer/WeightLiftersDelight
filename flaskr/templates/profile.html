@@ -1,10 +1,23 @@
 <Title>WLD</Title>
-{% if session.username %}
-<h1>Your results</h1>
+<h1>Your results {{session.username}}</h1>
+<form action="/filter" method="POST">
+	<h2>Filter</h2>
+	<input onchange="this.form.submit();"
+		type="radio" name="lift" value="Squat"> Squat
+	<input onchange="this.form.submit();"
+		type="radio" name="lift" value="DL"> DL
+	<input onchange="this.form.submit();"
+		type="radio" name="lift" value="Bench"> Bench
+	<input onchange="this.form.submit();"
+		type="radio" name="lift" value="Clean"> Clean
+	<input onchange="this.form.submit();"
+		type="radio" name="lift" value="Jerk"> Jerk
+	<input onchange="this.form.submit();"
+		type="radio" name="lift" value="Clear"> Clear filter
+</form>
 
-<hr>
 {% for result in results %}
-
+<hr>
 lift: {{result.lift}}
 <br>
 weight: {{ result.weight }}
@@ -12,19 +25,7 @@ weight: {{ result.weight }}
 date: {{result.date}}
 <hr>
 {% endfor %}
-<button onclick="window.location.href='/logout';">Log out</button>
 
-{% else %}
-<form action="/login" method="POST">
-	<p> Username: <br>
-		<input type="text" name="username">
-	</p>
-	<p> Password: <br>
-		<input type="password" name="password">
-	</p>		
-	<input type="submit" value="Log in">
-</form>
-<button onclick="window.location.href='/register';">Register</button>
-{% endif %}
+<button onclick="window.location.href='/logout';">Log out</button>
 <br>
 <button onclick="window.location.href='/';">Home</button>

@@ -12,10 +12,19 @@ app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URL")
 app.secret_key = getenv("SECRET_KEY")
 db = SQLAlchemy(app)
 
+def check_login():
+    if session.get('username') is None:
+        return True
+    else:
+        return False
+
+
 @app.route("/")
 def index():
-    if not session:
-        return redirect("/profile")
+    #This is not the most elegant way of doing the check and redirect but it works now.
+    #Might change to flask_login later.
+    if check_login() :
+        return redirect("/landing")
 
     res = db.session.execute(text(
         '''
@@ -25,26 +34,44 @@ def index():
     return render_template("index.html", movs = movs)
 
 @app.route("/profile")
-def profile():
+def profile(filter='%'):
+    if check_login() :
+        return redirect("/landing")
+
     user = session['username']
     user_id = db.session.execute(
             text('''SELECT id FROM users WHERE username=:u'''), {'u':user})
     uid = user_id.fetchone().id
+    print(uid)
+
     try:
         res = db.session.execute(text(
         '''
             SELECT results.weight,results.date,movements.lift FROM results 
             LEFT JOIN movements on results.movement_id = movements.id
-            WHERE results.id =:u
-            '''),{'u':uid})
+            WHERE results.user_id =:u AND movements.lift LIKE :f
+            '''),{'u':uid,'f':filter})
         results =  res.fetchall()
     except:
         results = ['Could not read the database']
 
     return render_template("profile.html", results = results)
 
+@app.route("/filter", methods=["POST"])
+def filter():
+    if check_login() :
+        return redirect("/landing")
+    filter = request.form['lift']
+    if filter == 'Clear':
+        return redirect("/profile")
+    return profile(filter)
+
 @app.route("/sendres", methods=["POST"])
 def send():
+    if check_login() :
+        return redirect("/landing")
+
+
     user = session['username']
     lift = request.form['lift']
     wg = request.form['weight']
@@ -81,15 +108,23 @@ def login():
 
 @app.route("/logout")
 def logout():
+    if check_login() :
+        return redirect("/landing")
     del session["username"]
     return redirect("/")
 
 @app.route("/register")
 def register():
+    if check_login() :
+        return redirect("/landing")
+
     return render_template("register.html")
     
 @app.route("/newu", methods=["POST"])
 def newu():
+    if check_login() :
+        return redirect("/landing")
+
     username = request.form['nusername']
     pswd_tx = request.form['password']
     pswd_hs = generate_password_hash(pswd_tx)
@@ -98,7 +133,9 @@ def newu():
     db.session.commit()
     return redirect("/")
 
+@app.route("/landing")
+def landing():
+    return render_template("landing.html")
 
 
 
-    
