@@ -48,3 +48,10 @@ Toiminnallisuus on alullaan. Tietokantaan voi lisätä tuloksia ja käyttöliitt
 jolla voidaan tarkastella tuloksia. Sovellus toimii tällä hetkellä one-user tilassa sillä toteutan käyttäjäkohtaisen toiminnallisuuden samalla kun teen käyttäjänhallinnan kuntoon.
 Sovellus on vähän jäljessä siitä tilasta missä sen haluaisin olevan, mutta korjaan tilanteen tällä viikolla. Tietokannan rakenne on tällä hetkellä suppea sillä en ole vielä päättänyt
 millä tavalla jaan tiedon. Tietokanta kuitenkin sisältää jo nyt suurimman osan tallennettavasta tiedosta. Sen käyttö on vain tällä hetkellä epäkäytännöllistä.
+
+## Ohjelman tila 07.08 Palautusta 2 täydentävät korjaukset
+
+Ohjelmassa voi nyt tehdä ne asiat mitkä olisin halunnut saada valmiiksi ennen palautusta kaksi. Käyttäjä voi kirjautua sisään sekä luoda uuden perus tason käyttäjän. Käyttäjä voi lisätä sekä tarkastella omia tuloksiaa.
+Käyttäjä voi myös filtteröidä tuloksia eri nostotyyppien mukaan. Käyttäjälle näytetään vain käyttäjäkohtaiset tulokset. Käyttäjänhallinta on toteutettu hashattyjä salasanoja säilyttäen sekä flaskin sessionia käyttäen.
+Käyttäjä profiili on kaikille käyttäjille saman url '/profile' takana mutta tiedon filtteröinti tapahtuu tietokanta tasolla eikä muitten käyttäjien tietoon kosketa. Jos käyttäjä ei ole kirjautunut sisään ohjataan hänet '/landing'
+sivulle mikä on kirjautumis/registeröitymis sivu.
