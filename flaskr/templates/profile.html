@@ -1,4 +1,5 @@
 <Title>WLD</Title>
+{% if session.username %}
 <h1>Your results</h1>
 
 <hr>
@@ -11,6 +12,19 @@ weight: {{ result.weight }}
 date: {{result.date}}
 <hr>
 {% endfor %}
+<button onclick="window.location.href='/logout';">Log out</button>
 
-
-
+{% else %}
+<form action="/login" method="POST">
+	<p> Username: <br>
+		<input type="text" name="username">
+	</p>
+	<p> Password: <br>
+		<input type="password" name="password">
+	</p>		
+	<input type="submit" value="Log in">
+</form>
+<button onclick="window.location.href='/register';">Register</button>
+{% endif %}
+<br>
+<button onclick="window.location.href='/';">Home</button>
