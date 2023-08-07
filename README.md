@@ -39,7 +39,7 @@ psql <tietokannan nimi> < schema.sql
 
 Käynnistä ohjelma komennolla
 ```bash
-flask --app flaskr/app run
+flask run
 ```
 
 ## Ohjelman tila 06.08.
