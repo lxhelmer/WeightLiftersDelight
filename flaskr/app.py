@@ -118,11 +118,11 @@ def login():
     user = res.fetchone()
     if not user:
         return redirect("/")
-    else:
-        user_hash = user.password
-        if check_password_hash(user_hash, pswd_tx):
-            session["username"] = username
-            return redirect("/")
+    user_hash = user.password
+    if check_password_hash(user_hash, pswd_tx):
+        session["username"] = username
+        return redirect("/")
+    return redirect("/landing")
 
 
 @app.route("/logout")
