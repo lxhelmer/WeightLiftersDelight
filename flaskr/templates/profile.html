@@ -16,15 +16,17 @@
 		type="radio" name="lift" value="Clear"> Clear filter
 </form>
 
+<form action="/remove" method="POST">
 {% for result in results %}
 <hr>
 lift: {{result.lift}}
 <br>
 weight: {{ result.weight }}
 <br>
-date: {{result.date}}
+date: {{result.date}} <input type="submit" value="remove"> 
 <hr>
 {% endfor %}
+</form>
 
 <button onclick="window.location.href='/logout';">Log out</button>
 <br>

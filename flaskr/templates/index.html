@@ -3,10 +3,13 @@
 
 <p>What do you wanna log</p>
 
+<h3 style="color:red;">{{ error }}</h1>
+<h3 style="color:green;">{{ notif }}</h1>
+
 <form action="/sendres" method="POST">
 	<select name="lift" id="lift">
-		{% for mov in movs %}
-		<option> {{ mov[0] }}
+		{% for entry in entrys%}
+		<option> {{ entry.lift }}
 		{% endfor %}
 	</select>
 	weight:
