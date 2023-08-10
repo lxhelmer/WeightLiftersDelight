@@ -155,25 +155,20 @@ def landing():
 
 @app.route("/remove/<id>", methods=["POST"])
 def remove(id):
-    #Postgres does not support JOIN on delete statements
-    #so this is probably the nicest way to check the owner
     if not_login():
         return redirect("/landing")
     user = session["username"]
-    res = db.session.execute(text("""
-                                 SELECT users.username FROM results LEFT JOIN users
-                                 ON results.user_id = users.id
-                                 WHERE results.id =:id
-                                  """),{"id":id})
-    owner = res.fetchone().username
-    if owner == user:
-        query = text("""
-                     DELETE FROM results
-                     WHERE results.id = :id
-                     """)
-        db.session.execute(query, {"id":id})
-        db.session.commit()
-        return redirect("/profile")
+    query = text(
+            """
+                 DELETE FROM results
+                 WHERE results.id IN 
+                 (SELECT results.id 
+                  FROM results LEFT JOIN users 
+                  ON results.user_id = users.id
+                  WHERE results.id =:id AND users.username=:user)
+            """)
+    db.session.execute(query, {"id":id, "user":user})
+    db.session.commit()
     return redirect("/profile")
     
     
