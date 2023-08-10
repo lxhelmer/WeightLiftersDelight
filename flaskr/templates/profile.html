@@ -1,3 +1,4 @@
+<!doctype html>
 <Title>WLD</Title>
 <h1>Your results {{session.username}}</h1>
 <form action="/filter" method="POST">
@@ -16,17 +17,19 @@
 		type="radio" name="lift" value="Clear"> Clear filter
 </form>
 
-<form action="/remove" method="POST">
 {% for result in results %}
 <hr>
 lift: {{result.lift}}
 <br>
 weight: {{ result.weight }}
 <br>
-date: {{result.date}} <input type="submit" value="remove"> 
+
+date: {{result.date}}
+<form action="/remove/{{result.id}}" method="POST">
+	<input type="submit" value="Remove">
+</form>
 <hr>
 {% endfor %}
-</form>
 
 <button onclick="window.location.href='/logout';">Log out</button>
 <br>

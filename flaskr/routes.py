@@ -5,7 +5,7 @@ from sqlalchemy.sql import text
 from werkzeug.security import check_password_hash, generate_password_hash
 from .db import db
 
-def check_login():
+def not_login():
     return session.get("username") is None
 
 @app.route("/")
@@ -14,7 +14,7 @@ def index(message=""):
     # This is not the most elegant way of
     # doing the check and redirect but it works now.
     # Might change to flask_login later.
-    if check_login():
+    if not_login():
         return redirect("/landing")
 
     error = ""
@@ -37,19 +37,18 @@ def index(message=""):
 
 @app.route("/profile")
 def profile(selected="%"):
-    if check_login():
+    if not_login():
         return redirect("/landing")
 
     user = session["username"]
     user_id = db.session.execute(
         text("""SELECT id FROM users WHERE username=:u"""), {"u": user})
     uid = user_id.fetchone().id
-    print(uid)
 
     res = db.session.execute(text(
         """
-        SELECT results.weight,results.date,movements.lift FROM results
-        LEFT JOIN movements on results.movement_id = movements.id
+        SELECT results.id,results.weight,results.date,movements.lift FROM results
+        LEFT JOIN movements ON results.movement_id = movements.id
         WHERE results.user_id =:u AND movements.lift LIKE :s ORDER BY results.date DESC
         """), {"u": uid, "s": selected})
     results = res.fetchall()
@@ -59,7 +58,7 @@ def profile(selected="%"):
 
 @app.route("/filter", methods=["POST"])
 def filter_results():
-    if check_login():
+    if not_login():
         return redirect("/landing")
     selected = request.form["lift"]
     if selected == "Clear":
@@ -69,7 +68,7 @@ def filter_results():
 
 @app.route("/sendres", methods=["POST"])
 def send_result():
-    if check_login():
+    if not_login():
         return redirect("/landing")
 
     user = session["username"]
@@ -119,15 +118,16 @@ def login():
 
 @app.route("/logout")
 def logout():
-    if check_login():
+    if not_login():
         return redirect("/landing")
+
     del session["username"]
     return redirect("/")
 
 
 @app.route("/register")
 def register():
-    if check_login():
+    if not_login():
         return redirect("/landing")
 
     return render_template("register.html")
@@ -135,14 +135,15 @@ def register():
 
 @app.route("/newu", methods=["POST"])
 def new_user():
-    if check_login():
+    if not_login():
         return redirect("/landing")
 
     username = request.form["nusername"]
     pswd_tx = request.form["password"]
     pswd_hs = generate_password_hash(pswd_tx)
     query = text(
-        "INSERT INTO users (username, password, admin) VALUES (:u, :p, :a)")
+        """INSERT INTO users (username, password, admin) VALUES (:u, :p, :a)"""
+        )
     db.session.execute(query, {"u": username, "p": pswd_hs, "a": False})
     db.session.commit()
     return redirect("/")
@@ -151,3 +152,29 @@ def new_user():
 @app.route("/landing")
 def landing():
     return render_template("landing.html")
+
+@app.route("/remove/<id>", methods=["POST"])
+def remove(id):
+    #Postgres does not support JOIN on delete statements
+    #so this is probably the nicest way to check the owner
+    if not_login():
+        return redirect("/landing")
+    user = session["username"]
+    res = db.session.execute(text("""
+                                 SELECT users.username FROM results LEFT JOIN users
+                                 ON results.user_id = users.id
+                                 WHERE results.id =:id
+                                  """),{"id":id})
+    owner = res.fetchone().username
+    if owner == user:
+        query = text("""
+                     DELETE FROM results
+                     WHERE results.id = :id
+                     """)
+        db.session.execute(query, {"id":id})
+        db.session.commit()
+        return redirect("/profile")
+    return redirect("/profile")
+    
+    
+    
