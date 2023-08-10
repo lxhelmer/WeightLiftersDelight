@@ -17,7 +17,8 @@
 		movement_id INTEGER REFERENCES movements,
 		weight DECIMAL(5,2),
 		date DATE,
-		class_id INTEGER REFERENCES classes
+		class_id INTEGER REFERENCES classes,
+		publig BOOL
 	);
 	CREATE TABLE comments (
 		id SERIAL PRIMARY KEY,
