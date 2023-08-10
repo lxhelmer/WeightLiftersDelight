@@ -41,6 +41,7 @@ Käynnistä ohjelma komennolla
 ```bash
 flask run
 ```
+Ohjelma tarvitsee lisäksi tiedoston .env jossa asetetaan kurssimateriaalin mukaisesti ympäristömuuttujat 'DATABASE_URL' ja 'SECRET_KEY'
 
 ## Ohjelman tila 06.08.
 
