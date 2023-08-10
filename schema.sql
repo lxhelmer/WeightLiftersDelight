@@ -25,4 +25,9 @@
 		comment TEXT,
 		result_id INTEGER REFERENCES results
 	);
+	CREATE TABLE likes (
+		id SERIAL PRIMARY KEY,
+		amount INTEGER,
+		result_id INTEGER REFERENCES results
+	);
 
