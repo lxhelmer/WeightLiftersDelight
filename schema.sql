@@ -19,4 +19,9 @@
 		date DATE,
 		class_id INTEGER REFERENCES classes
 	);
+	CREATE TABLE comments (
+		id SERIAL PRIMARY KEY,
+		comment TEXT,
+		result_id INTEGER REFERENCES results
+	);
 
