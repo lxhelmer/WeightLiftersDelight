@@ -21,10 +21,16 @@
 		date DATE,
 		class_id INTEGER REFERENCES classes,
 		public BOOL,
-		amount INTEGER
+		like_amount INTEGER DEFAULT 0,
+		comp_id INTEGER DEFAULT 0
+		
 	);
 	CREATE TABLE comments (
 		id SERIAL PRIMARY KEY,
 		comment TEXT,
 		result_id INTEGER REFERENCES results
+	);
+	CREATE TABLE competition (
+		id SERIAL PRIMARY KEY,
+		name TEXT
 	);
