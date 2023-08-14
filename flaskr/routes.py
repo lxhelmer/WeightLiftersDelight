@@ -93,8 +93,8 @@ def send_result():
 
     query = text(
         """INSERT INTO results
-        (user_id, movement_id, weight, date) values (:a,:b,:c,:d)""")
-    db.session.execute(query, {"a": uid, "b": lift_t, "c": weight, "d": date})
+        (user_id, movement_id, weight, date, public) values (:a,:b,:c,:d,:p)""")
+    db.session.execute(query, {"a": uid, "b": lift_t, "c": weight, "d": date, "p":True})
     db.session.commit()
     return redirect("/ok")
 
@@ -168,7 +168,7 @@ def remove(id):
     return redirect("/profile")
     
     
-@app.route("/result/<id>", methods=["POST"])
+@app.route("/result/<id>")
 def result_page(id):
     if not_login():
         return redirect("/landing")
@@ -177,18 +177,22 @@ def result_page(id):
 
     query = text("""
                  SELECT results.id, users.username, results.public, results.weight,
-                 movements.lift, results.date, classes.sport, classes.open, classes.maximum_weight
+                 movements.lift, results.date, classes.sport, classes.open,
+                 classes.max_weight, results.like_amount
                  FROM results
                  LEFT JOIN movements
-                 ON results.lift_id = movements.id
+                 ON results.movement_id= movements.id
                  LEFT JOIN users
-                 ON resutlst.user_id = users.id
+                 ON results.user_id = users.id
                  LEFT JOIN classes
                  ON results.class_id = classes.id
                  """)
     result = db.session.execute(query, {"id":id})
-    lift_info = result.fetchall()
+    lift_info = result.fetchone()
 
+    print(user)
+    print(lift_info.username)
+    print(lift_info.public)
     if lift_info.username == user or lift_info.public:
         query = text("""
                      SELECT comment
@@ -198,20 +202,12 @@ def result_page(id):
         result = db.session.execute(query, {"lift_id":lift_info.id})
         comments = result.fetchall()
 
-        query = text("""
-                     SELECT amount
-                     FROM likes
-                     WHERE result_id =:lift_id
-                     """)
-        result = db.session.execute(query, {"lift_id":lift_info.id})
-        likes = result.fetchone()[0]
-
-
         return render_template(
                 "result.html",
                 info = lift_info,
                 comments = comments,
-                likes = likes,
                 )
+    return redirect("/profile")
+
     
     

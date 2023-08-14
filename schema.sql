@@ -20,16 +20,11 @@
 		weight DECIMAL(5,2),
 		date DATE,
 		class_id INTEGER REFERENCES classes,
-		publig BOOL
+		public BOOL,
+		amount INTEGER
 	);
 	CREATE TABLE comments (
 		id SERIAL PRIMARY KEY,
 		comment TEXT,
 		result_id INTEGER REFERENCES results
 	);
-	CREATE TABLE likes (
-		id SERIAL PRIMARY KEY,
-		amount INTEGER,
-		result_id INTEGER REFERENCES results
-	);
-
