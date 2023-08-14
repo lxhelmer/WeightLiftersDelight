@@ -4,12 +4,14 @@
 	);
 	CREATE TABLE users(
 		id SERIAL PRIMARY KEY,
-		username TEXT,
+		username TEXT UNIQUE,
 		password TEXT
 	);
 	CREATE TABLE classes(
 		id SERIAL PRIMARY KEY,
 		max_weight INTEGER
+		sport TEXT,
+		open BOOL
 	);
 	CREATE TABLE results (
 		id SERIAL PRIMARY KEY,

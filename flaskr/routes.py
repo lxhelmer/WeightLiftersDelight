@@ -127,16 +127,12 @@ def logout():
 
 @app.route("/register")
 def register():
-    if not_login():
-        return redirect("/landing")
 
     return render_template("register.html")
 
 
 @app.route("/newu", methods=["POST"])
 def new_user():
-    if not_login():
-        return redirect("/landing")
 
     username = request.form["nusername"]
     pswd_tx = request.form["password"]
@@ -171,5 +167,51 @@ def remove(id):
     db.session.commit()
     return redirect("/profile")
     
+    
+@app.route("/result/<id>", methods=["POST"])
+def result_page(id):
+    if not_login():
+        return redirect("/landing")
+
+    user = session["username"]
+
+    query = text("""
+                 SELECT results.id, users.username, results.public, results.weight,
+                 movements.lift, results.date, classes.sport, classes.open, classes.maximum_weight
+                 FROM results
+                 LEFT JOIN movements
+                 ON results.lift_id = movements.id
+                 LEFT JOIN users
+                 ON resutlst.user_id = users.id
+                 LEFT JOIN classes
+                 ON results.class_id = classes.id
+                 """)
+    result = db.session.execute(query, {"id":id})
+    lift_info = result.fetchall()
+
+    if lift_info.username == user or lift_info.public:
+        query = text("""
+                     SELECT comment
+                     FROM comments
+                     WHERE result_id =:lift_id
+                     """)
+        result = db.session.execute(query, {"lift_id":lift_info.id})
+        comments = result.fetchall()
+
+        query = text("""
+                     SELECT amount
+                     FROM likes
+                     WHERE result_id =:lift_id
+                     """)
+        result = db.session.execute(query, {"lift_id":lift_info.id})
+        likes = result.fetchone()[0]
+
+
+        return render_template(
+                "result.html",
+                info = lift_info,
+                comments = comments,
+                likes = likes,
+                )
     
     
