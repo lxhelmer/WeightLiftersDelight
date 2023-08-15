@@ -85,6 +85,8 @@ def send_result():
     user = session["username"]
     lift = request.form["lift"]
     weight = request.form["weight"]
+    public = request.form["public"]
+    print(public)
     try:
         weight = float(weight)
     except ValueError:
@@ -105,7 +107,7 @@ def send_result():
     query = text(
         """INSERT INTO results
         (user_id, movement_id, weight, date, public) values (:a,:b,:c,:d,:p)""")
-    db.session.execute(query, {"a": uid, "b": lift_t, "c": weight, "d": date, "p":True})
+    db.session.execute(query, {"a": uid, "b": lift_t, "c": weight, "d": date, "p":public})
     db.session.commit()
     return redirect("/ok")
 

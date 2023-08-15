@@ -14,7 +14,11 @@
 		{% endfor %}
 	</select>
 	weight:
-	<input type="text" name="weight">
+	<input type="text" name="weight"> range 0-999
+	<br>
+	<input type="checkbox" name="public">
+	<input type = "hidden" id = "Checkhidden" name = "public" value = "0"/>
+	<label for="public">public</label>
 	<br>
 	<input type="submit" value="add to log">
 </form>
