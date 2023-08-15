@@ -1,6 +1,6 @@
 from datetime import datetime
 from .app import app
-from flask import render_template, request, redirect, session
+from flask import render_template, request, redirect, session, abort
 from sqlalchemy.sql import text
 from werkzeug.security import check_password_hash, generate_password_hash
 from .db import db
@@ -35,10 +35,10 @@ def index(message=""):
     return render_template("index.html", entrys=entrys, notif=notif, error=error)
 
 
-@app.route("/profile")
+@app.route("/profile", methods=["GET","POST"])
 def profile(selected="%"):
     if not_login():
-        return redirect("/landing")
+        abort(403)
 
     user = session["username"]
     user_id = db.session.execute(
@@ -53,6 +53,7 @@ def profile(selected="%"):
         """), {"u": uid, "s": selected})
     results = res.fetchall()
 
+    
     return render_template("profile.html", results=results)
 
 
@@ -168,7 +169,7 @@ def remove(id):
     return redirect("/profile")
     
     
-@app.route("/result/<id>")
+@app.route("/result/<id>", methods=["POST"])
 def result_page(id):
     if not_login():
         return redirect("/landing")

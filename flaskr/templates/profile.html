@@ -25,6 +25,9 @@ weight: {{ result.weight }}
 <br>
 
 date: {{result.date}}
+<form action="/result/{{result.id}}" method="POST">
+	<input type="submit" value="Open">
+</form>
 <form action="/remove/{{result.id}}" method="POST">
 	<input type="submit" value="Remove">
 </form>
