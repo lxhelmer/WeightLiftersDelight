@@ -20,3 +20,18 @@
 </form>
 
 <button onclick="window.location.href='/profile';">To profile</button>
+
+{% for result in publics %}
+<hr>
+lift: {{result.lift}}
+<br>
+weight: {{ result.weight }}
+<br>
+lifter: {{ result.username }}
+
+date: {{result.date}}
+<form action="/result/{{result.id}}" method="POST">
+	<input type="submit" value="Open">
+</form>
+<hr>
+{% endfor %}

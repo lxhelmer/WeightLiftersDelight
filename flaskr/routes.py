@@ -21,18 +21,29 @@ def index(message=""):
     notif = ""
 
     if message == "fail":
-        error = "Failed to add new entry. :("
+        error = "Failed to add new entry."
     elif message == "ok":
         notif = "Added new entry!"
     else:
         notif = ""
 
-    res = db.session.execute(text(
+    lifts = db.session.execute(text(
         """
             select lift from movements
         """))
-    entrys = res.fetchall()
-    return render_template("index.html", entrys=entrys, notif=notif, error=error)
+    entrys = lifts.fetchall()
+    
+    query = text(
+        """
+        SELECT results.id,results.weight,results.date,movements.lift, users.username FROM results
+        LEFT JOIN movements ON results.movement_id = movements.id
+        LEFT JOIN users ON results.user_id = users.id
+        WHERE results.public ORDER BY results.date DESC
+        """)
+    public_results = db.session.execute(query)
+    publics = public_results.fetchall()
+
+    return render_template("index.html", entrys=entrys, notif=notif, error=error, publics=publics)
 
 
 @app.route("/profile", methods=["GET","POST"])
@@ -53,7 +64,6 @@ def profile(selected="%"):
         """), {"u": uid, "s": selected})
     results = res.fetchall()
 
-    
     return render_template("profile.html", results=results)
 
 
