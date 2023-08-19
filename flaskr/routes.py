@@ -52,7 +52,7 @@ def index(message=""):
 @app.route("/profile", methods=["GET","POST"])
 def profile(selected="%"):
     if not_login():
-        abort(403)
+        return redirect("/landing")
 
     user = session["username"]
     user_id = db.session.execute(
@@ -154,11 +154,12 @@ def new_user():
 
     username = request.form["nusername"]
     pswd_tx = request.form["password"]
+    admin = request.form["admin"]
     pswd_hs = generate_password_hash(pswd_tx)
     query = text(
         """INSERT INTO users (username, password, admin) VALUES (:u, :p, :a)"""
         )
-    db.session.execute(query, {"u": username, "p": pswd_hs, "a": False})
+    db.session.execute(query, {"u": username, "p": pswd_hs, "a":admin})
     db.session.commit()
     return redirect("/")
 
