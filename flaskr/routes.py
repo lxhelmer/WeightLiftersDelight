@@ -7,8 +7,11 @@ from .db import db
 
 def not_login():
     return session.get("username") is None
-
-@app.route("/")
+def is_admin():
+    if not session.get("admin"):
+        abort(403)
+        
+@app.route("/", methods=["GET","POST"])
 @app.route("/<message>")
 def index(message=""):
     # This is not the most elegant way of
@@ -125,6 +128,7 @@ def login():
     user_hash = user.password
     if check_password_hash(user_hash, pswd_tx):
         session["username"] = username
+        session["admin"] = True
         return redirect("/")
     return redirect("/landing")
 
@@ -135,6 +139,7 @@ def logout():
         return redirect("/landing")
 
     del session["username"]
+    del session["admin"]
     return redirect("/")
 
 
@@ -198,7 +203,7 @@ def result_page(id):
                  LEFT JOIN users
                  ON results.user_id = users.id
                  LEFT JOIN classes
-                 ON results.class_id = classes.id
+                 ON users.class_id = classes.id
                  """)
     result = db.session.execute(query, {"id":id})
     lift_info = result.fetchone()
@@ -224,3 +229,21 @@ def result_page(id):
 
     
     
+@app.route("/users")
+def users():
+    if not_login():
+        return redirect("/landing")
+    is_admin()
+    query = text("""
+                 SELECT users.id, users.username, classes.max_weight,
+                 classes.sport, classes.division
+                 FROM users
+                 LEFT JOIN classes
+                 ON users.class_id = classes.id
+                 """)
+    result = db.session.execute(query)
+    users = result.fetchall()
+
+    
+
+    return render_template("users.html", users=users)

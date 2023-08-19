@@ -5,13 +5,14 @@
 	CREATE TABLE users(
 		id SERIAL PRIMARY KEY,
 		username TEXT UNIQUE,
-		password TEXT
+		password TEXT,
+		class_id INTEGER REFERENCES classes
 	);
 	CREATE TABLE classes(
 		id SERIAL PRIMARY KEY,
 		max_weight INTEGER
 		sport TEXT,
-		open BOOL
+		division BOOL
 	);
 	CREATE TABLE results (
 		id SERIAL PRIMARY KEY,
@@ -19,11 +20,9 @@
 		movement_id INTEGER REFERENCES movements,
 		weight DECIMAL(5,2),
 		date DATE,
-		class_id INTEGER REFERENCES classes,
 		public BOOL,
 		like_amount INTEGER DEFAULT 0,
 		comp_id INTEGER DEFAULT 0
-		
 	);
 	CREATE TABLE comments (
 		id SERIAL PRIMARY KEY,
