@@ -10,6 +10,8 @@ def not_login():
 def is_admin():
     if not session.get("admin"):
         abort(403)
+    else:
+        return True
         
 @app.route("/", methods=["GET","POST"])
 @app.route("/<message>")
@@ -203,6 +205,23 @@ def landing():
 def remove(id):
     if not_login():
         return redirect("/landing")
+    if is_admin():
+        query = text(
+                """
+                     DELETE FROM results
+                     WHERE results.id IN 
+                     (SELECT results.id 
+                      FROM results LEFT JOIN users 
+                      ON results.user_id = users.id
+                      WHERE results.id =:id)
+                     RETURNING results.user_id
+                """)
+        result = db.session.execute(query, {"id":id,})
+        user_id = result.fetchone().user_id
+        db.session.commit()
+        return redirect("/user/" + str(user_id))
+
+        
     user = session["username"]
     query = text(
             """
@@ -282,3 +301,32 @@ def users():
     
 
     return render_template("users.html", users=users)
+
+@app.route("/user/<id>/<selected>", methods=["POST", "GET"])
+@app.route("/user/<id>", methods=["POST", "GET"])
+def user(id, selected='%'):
+    if not_login():
+        return redirect("/landing")
+    is_admin()
+
+    result = db.session.execute(text(
+        """
+        SELECT results.id,results.weight,results.date,
+        movements.lift, results.user_id, users.username
+        FROM results
+        LEFT JOIN movements ON results.movement_id = movements.id
+        LEFT JOIN users ON results.user_id = users.id
+        WHERE results.user_id =:u AND movements.lift LIKE :s ORDER BY results.date DESC
+        """), {"u": id, "s": selected})
+    results = result.fetchall()
+
+    #There is no nice way of getting the name when there is
+    #no results for that users
+    user_result = db.session.execute(
+            text("""SELECT users.username FROM users WHERE users.id =:id"""),
+            {"id": id}
+            )
+    name = user_result.fetchone().username
+    
+
+    return render_template("user.html", results=results, name=name)
