@@ -267,11 +267,14 @@ def users():
         return redirect("/landing")
     is_admin()
     query = text("""
-                 SELECT users.id, users.username, classes.max_weight,
-                 classes.sport, classes.division
+                 SELECT users.id, users.username, 
+                 wl.max_weight AS wl_max, wl.division AS wl_div,
+                 pl.max_weight AS pl_max, pl.division AS PL_div
                  FROM users
-                 LEFT JOIN classes
-                 ON users.class_id = classes.id
+                 LEFT JOIN classes AS wl
+                 ON users.wl_class_id = wl.id
+                 LEFT JOIN classes as PL
+                 ON users.pl_class_id = wl.id
                  """)
     result = db.session.execute(query)
     users = result.fetchall()

@@ -4,9 +4,16 @@
 <hr>
 {{user.username}}
 <br>
-SPORT: {{user.sport}}
+
+CLASSES:
 <br>
-CLASS: {{user.division}}{{user.max_weight}}
+{% if user.wl_div %}
+WL {{user.wl_div}}{{user.wl_max}}
+{% endif %}
+<br>
+{% if user.pl_div %}
+PL {{user.pl_div}}{{user.pl_max}}
+{% endif %}
 <br>
 <form action="/user/{{user.id}}" method="POST">
 	<input type="submit" value="Open">
