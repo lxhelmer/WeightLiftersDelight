@@ -12,7 +12,8 @@
 		id SERIAL PRIMARY KEY,
 		username TEXT UNIQUE,
 		password TEXT,
-		class_id INTEGER REFERENCES classes(id),
+		wl_class_id INTEGER REFERENCES classes(id),
+		pl_class_id INTEGER REFERENCES classes(id),
 		admin BOOL
 	);
 	CREATE TABLE results (
@@ -34,8 +35,3 @@
 		id SERIAL PRIMARY KEY,
 		name TEXT
 	);
-	INSERT INTO movements (lift) VALUES ('Squat');
-	INSERT INTO movements (lift) VALUES ('Bench');
-	INSERT INTO movements (lift) VALUES ('Deadlift');
-	INSERT INTO movements (lift) VALUES ('Clean');
-	INSERT INTO movements (lift) VALUES ('Jerk');

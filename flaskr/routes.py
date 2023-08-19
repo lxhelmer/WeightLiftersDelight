@@ -155,11 +155,42 @@ def new_user():
     username = request.form["nusername"]
     pswd_tx = request.form["password"]
     admin = request.form["admin"]
+    weightlifting = request.form["weightlifting"]
+    powerlifting = request.form["powerlifting"]
+    division = request.form["division"]
+    weight = request.form["weight"] 
+
+    wl_class = None
+    pl_class = None
+
+    if weightlifting:
+        wl_query= text("""
+                           SELECT id
+                           FROM classes WHERE sport = 'WL' AND division =:d AND max_weight > :w
+                           ORDER by max_weight ASC
+                           """)
+        result = db.session.execute(wl_query, {"d":division,"w":weight})
+        wl_class = result.fetchone().id
+
+
+    if powerlifting:
+        pl_query = text("""
+                           SELECT id
+                           FROM classes WHERE sport = 'PL' AND division =:d AND max_weight > :w
+                           ORDER by max_weight ASC
+                           """)
+        result = db.session.execute(pl_query, {"d":division,"w":weight})
+        pl_class = result.fetchone().id
+
     pswd_hs = generate_password_hash(pswd_tx)
     query = text(
-        """INSERT INTO users (username, password, admin) VALUES (:u, :p, :a)"""
+        """INSERT INTO users (username, password, admin, wl_class_id, pl_class_id) VALUES (:u, :p, :a, :wl, :pl)"""
         )
-    db.session.execute(query, {"u": username, "p": pswd_hs, "a":admin})
+    db.session.execute(query, {"u": username,
+                               "p": pswd_hs,
+                               "a": admin,
+                               "wl": wl_class,
+                               "pl": pl_class})
     db.session.commit()
     return redirect("/")
 
@@ -196,7 +227,7 @@ def result_page(id):
 
     query = text("""
                  SELECT results.id, users.username, results.public, results.weight,
-                 movements.lift, results.date, classes.sport, classes.open,
+                 movements.lift, results.date, classes.sport, classes.division,
                  classes.max_weight, results.like_amount
                  FROM results
                  LEFT JOIN movements

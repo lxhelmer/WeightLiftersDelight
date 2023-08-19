@@ -6,11 +6,26 @@
 		<input type="text" name="nusername">
 	</p>
 	<p> Password: <br>
-		<input type="text" name="password">
+		<input type="password" name="password">
 	</p>		
-	<input type="checkbox" name="admin">
-	<input type = "hidden" id = "Checkhidden" name = "admin" value = "0"/>
-	<label for="public">admin account</label>
+	<input type="checkbox" name="admin"> Create as admin account
+	<input type = "hidden" id = "adminhidden" name = "admin" value = "0"/>
+	<br>
+	Sport :
+	<input type="checkbox" name="weightlifting" value="WL"> Weightlifting
+	<input type = "hidden" id = "wlhidden" name = "weightlifting" value = "0"/>
+
+	<input type="checkbox" name="powerlifting" value="PL"> Powerlifting
+	<input type = "hidden" id = "plhidden" name = "powerlifting" value = "0"/>
+
+	<br>
+	Competition division:
+	<input type="radio" name="division" value="M" checked> M
+	<input type="radio" name="division" value="W"> W
+		
+	<br>
+	Competition weight:
+	<input type="number" name="weight">
 	<br>
 	<input type="submit" value="Create">
 </form>
