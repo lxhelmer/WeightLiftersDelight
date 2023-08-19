@@ -6,7 +6,7 @@
 		id SERIAL PRIMARY KEY,
 		username TEXT UNIQUE,
 		password TEXT,
-		class_id INTEGER REFERENCES classes
+		class_id INTEGER REFERENCES classes(id)
 	);
 	CREATE TABLE classes(
 		id SERIAL PRIMARY KEY,
@@ -16,8 +16,8 @@
 	);
 	CREATE TABLE results (
 		id SERIAL PRIMARY KEY,
-		user_id INTEGER REFERENCES users,
-		movement_id INTEGER REFERENCES movements,
+		user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+		movement_id INTEGER REFERENCES movements(id),
 		weight DECIMAL(5,2),
 		date DATE,
 		public BOOL,
@@ -27,7 +27,7 @@
 	CREATE TABLE comments (
 		id SERIAL PRIMARY KEY,
 		comment TEXT,
-		result_id INTEGER REFERENCES results
+		result_id INTEGER REFERENCES results(id) ON DELETE CASCADE
 	);
 	CREATE TABLE competition (
 		id SERIAL PRIMARY KEY,
