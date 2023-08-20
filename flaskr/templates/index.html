@@ -14,7 +14,7 @@
 		{% endfor %}
 	</select>
 	weight:
-	<input type="text" name="weight"> range 0-999
+	<input type="number" name="weight"> range 0-999
 	<br>
 	<input type="checkbox" name="public">
 	<input type = "hidden" id = "Checkhidden" name = "public" value = "0"/>
@@ -39,3 +39,21 @@ date: {{result.date}}
 </form>
 <hr>
 {% endfor %}
+
+{% if admin %}
+<form action="/sendcomp" method="POST">
+	
+	Competition name:
+	<input type="text" name="name">
+	<br>
+	<select name="lift" id="lift">
+		{% for sport in sports %}
+		<option> {{ sport }}
+		{% endfor %}
+	</select>
+
+	
+	<br>
+	<input type="submit" value="add to log">
+</form>
+{% endif %}

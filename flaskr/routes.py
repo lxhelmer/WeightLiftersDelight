@@ -21,6 +21,7 @@ def index(message=""):
     # Might change to flask_login later.
     if not_login():
         return redirect("/landing")
+    admin = is_admin()
 
     error = ""
     notif = ""
@@ -40,15 +41,21 @@ def index(message=""):
     
     query = text(
         """
-        SELECT results.id,results.weight,results.date,movements.lift, users.username FROM results
-        LEFT JOIN movements ON results.movement_id = movements.id
-        LEFT JOIN users ON results.user_id = users.id
+        SELECT results.id,results.weight,results.date,
+        movements.lift, users.username, users.admin 
+        FROM results
+        LEFT JOIN movements 
+        ON results.movement_id = movements.id
+        LEFT JOIN users 
+        ON results.user_id = users.id
         WHERE results.public ORDER BY results.date DESC
         """)
     public_results = db.session.execute(query)
     publics = public_results.fetchall()
 
-    return render_template("index.html", entrys=entrys, notif=notif, error=error, publics=publics)
+    return render_template(
+            "index.html", entrys=entrys, notif=notif, error=error,
+            publics=publics, sports=["WL","PL"], admin=admin)
 
 
 @app.route("/profile", methods=["GET","POST"])
@@ -114,7 +121,7 @@ def login():
     username = request.form["username"]
     pswd_tx = request.form["password"]
     res = db.session.execute(
-        text("""Select id, password FROM users WHERE username =:username"""), {
+        text("""Select id, password, admin FROM users WHERE username =:username"""), {
             "username": username})
     user = res.fetchone()
     if not user:
@@ -122,7 +129,8 @@ def login():
     user_hash = user.password
     if check_password_hash(user_hash, pswd_tx):
         session["username"] = username
-        session["admin"] = True
+        if user.admin:
+            session["admin"] = True
         return redirect("/")
     return redirect("/landing")
 
