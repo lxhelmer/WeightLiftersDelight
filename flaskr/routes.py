@@ -37,7 +37,7 @@ def index(message=""):
         """))
     entrys = lifts.fetchall()
     
-    query = text(
+    res_query = text(
         """
         SELECT results.id,results.weight,results.date,
         movements.lift, users.username, users.admin
@@ -48,12 +48,18 @@ def index(message=""):
         ON results.user_id = users.id
         WHERE results.public ORDER BY results.date DESC
         """)
-    public_results = db.session.execute(query)
+    public_results = db.session.execute(res_query)
     publics = public_results.fetchall()
+
+    comp_query = text("""
+                      SELECT name, id, sport FROM competitions
+                      """)
+    comp_result = db.session.execute(comp_query)
+    competitions = comp_result.fetchall()
 
     return render_template(
             "index.html", entrys=entrys, notif=notif, error=error,
-            publics=publics, sports=["WL","PL"], admin=admin)
+            publics=publics, sports=["WL","PL"], admin=admin, comps=competitions)
 
 
 @app.route("/profile", methods=["GET","POST"])
@@ -88,7 +94,10 @@ def send_result():
     lift = request.form["lift"]
     weight = request.form["weight"]
     public = request.form["public"]
-    print(public)
+
+    comp = request.form["comp"]
+    if comp == "":
+        comp = None
     try:
         weight = float(weight)
     except ValueError:
@@ -96,8 +105,7 @@ def send_result():
     date = datetime.today().strftime("%Y-%m-%d")
 
     # I don"t like this way of getting the lift
-    # id but it handles the changes and new lifts quite well
-    # might try to get rid of it later
+    # id but it handles the changes and new lifts well
     lift_type = db.session.execute(
         text("""SELECT id FROM movements WHERE lift=:x"""), {"x": lift})
     lift_t = lift_type.fetchone().id
@@ -106,10 +114,11 @@ def send_result():
         text("""SELECT id FROM users WHERE username=:u"""), {"u": user})
     uid = user_id.fetchone().id
 
+
     query = text(
         """INSERT INTO results
-        (user_id, movement_id, weight, date, public) values (:a,:b,:c,:d,:p)""")
-    db.session.execute(query, {"a": uid, "b": lift_t, "c": weight, "d": date, "p":public})
+        (user_id, movement_id, weight, date, public, comp_id) values (:a,:b,:c,:d,:p, :cid)""")
+    db.session.execute(query, {"a": uid, "b": lift_t, "c": weight, "d": date, "p":public, "cid":comp})
     db.session.commit()
     return redirect("/ok")
 

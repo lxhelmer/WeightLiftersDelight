@@ -24,7 +24,7 @@
 		date DATE,
 		public BOOL,
 		like_amount INTEGER DEFAULT 0,
-		comp_id INTEGER DEFAULT 0
+		comp_id INTEGER
 	);
 	CREATE TABLE comments (
 		id SERIAL PRIMARY KEY,

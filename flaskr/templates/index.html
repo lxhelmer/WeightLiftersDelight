@@ -10,11 +10,19 @@
 <form action="/sendres" method="POST">
 	<select name="lift" id="lift">
 		{% for entry in entrys%}
-		<option> {{ entry.lift }}
+		<option> {{ entry.lift }} </option>
 		{% endfor %}
 	</select>
 	weight:
 	<input type="number" name="weight"> range 0-999
+	<br>
+	Select competition:
+	<select name="comp" id="comp">
+		<option label=" "></option>
+		{% for comp in comps%}
+		<option value={{comp.id}}> {{ comp.name }}</option>
+		{% endfor %}
+	</select>
 	<br>
 	<input type="checkbox" name="public">
 	<input type = "hidden" id = "Checkhidden" name = "public" value = "0"/>
