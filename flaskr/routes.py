@@ -52,7 +52,8 @@ def index(message=""):
 
 
 @app.route("/profile", methods=["GET","POST"])
-def profile(selected="%"):
+@app.route("/profile/<filter>", methods=["GET","POST"])
+def profile(filter="%"):
     if not_login():
         return redirect("/landing")
 
@@ -65,21 +66,12 @@ def profile(selected="%"):
         """
         SELECT results.id,results.weight,results.date,movements.lift FROM results
         LEFT JOIN movements ON results.movement_id = movements.id
-        WHERE results.user_id =:u AND movements.lift LIKE :s ORDER BY results.date DESC
-        """), {"u": uid, "s": selected})
+        WHERE results.user_id =:u AND movements.lift LIKE :f ORDER BY results.date DESC
+        """), {"u": uid, "f": filter})
     results = res.fetchall()
 
     return render_template("profile.html", results=results)
 
-
-@app.route("/filter", methods=["POST"])
-def filter_results():
-    if not_login():
-        return redirect("/landing")
-    selected = request.form["lift"]
-    if selected == "Clear":
-        return redirect("/profile")
-    return profile(selected)
 
 
 @app.route("/sendres", methods=["POST"])
@@ -304,7 +296,7 @@ def users():
 
 @app.route("/user/<id>/<selected>", methods=["POST", "GET"])
 @app.route("/user/<id>", methods=["POST", "GET"])
-def user(id, selected='%'):
+def user(id, selected="%"):
     if not_login():
         return redirect("/landing")
     is_admin()
@@ -323,10 +315,10 @@ def user(id, selected='%'):
     #There is no nice way of getting the name when there is
     #no results for that users
     user_result = db.session.execute(
-            text("""SELECT users.username FROM users WHERE users.id =:id"""),
+            text("""SELECT users.username, users.id FROM users WHERE users.id =:id"""),
             {"id": id}
             )
-    name = user_result.fetchone().username
+    user = user_result.fetchone()
     
 
-    return render_template("user.html", results=results, name=name)
+    return render_template("user.html", results=results, user=user)

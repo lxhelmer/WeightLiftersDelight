@@ -1,21 +1,20 @@
 <!doctype html>
 <Title>WLD</Title>
-<h1>Results of  {{name}}</h1> 
-<form action="/filter" method="POST">
-	<h2>Filter</h2>
-	<input onchange="this.form.submit();"
+<h1>Results of  {{user.username}}</h1> 
+<h2>Filter</h2>
+
+	<input onclick="window.location.href='/user/{{user.id}}/Squat';"
 		type="radio" name="lift" value="Squat"> Squat
-	<input onchange="this.form.submit();"
-		type="radio" name="lift" value="DL"> DL
-	<input onchange="this.form.submit();"
+	<input onclick="window.location.href='/user/{{user.id}}/Deadlift';"
+		type="radio" name="lift" value="Deadlift"> Deadlift
+	<input onclick="window.location.href='/user/{{user.id}}/Bench';"
 		type="radio" name="lift" value="Bench"> Bench
-	<input onchange="this.form.submit();"
+	<input onclick="window.location.href='/user/{{user.id}}/Clean';"
 		type="radio" name="lift" value="Clean"> Clean
-	<input onchange="this.form.submit();"
+	<input onclick="window.location.href='/user/{{user.id}}/Jerk';"
 		type="radio" name="lift" value="Jerk"> Jerk
-	<input onchange="this.form.submit();"
+	<input onclick="window.location.href='/user/{{user.id}}';"
 		type="radio" name="lift" value="Clear"> Clear filter
-</form>
 
 {% for result in results %}
 <hr>
@@ -34,6 +33,7 @@ date: {{result.date}}
 <hr>
 {% endfor %}
 
+<br>
 <button onclick="window.location.href='/logout';">Log out</button>
 <br>
 <button onclick="window.location.href='/';">Home</button>

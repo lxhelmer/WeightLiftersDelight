@@ -1,21 +1,19 @@
 <!doctype html>
 <Title>WLD</Title>
 <h1>Your results {{session.username}}</h1>
-<form action="/filter" method="POST">
-	<h2>Filter</h2>
-	<input onchange="this.form.submit();"
+
+	<input onclick="window.location.href='/profile/Squat';"
 		type="radio" name="lift" value="Squat"> Squat
-	<input onchange="this.form.submit();"
+	<input onclick="window.location.href='/profile/Deadlift';"
 		type="radio" name="lift" value="DL"> DL
-	<input onchange="this.form.submit();"
+	<input onclick="window.location.href='/profile/Bench';"
 		type="radio" name="lift" value="Bench"> Bench
-	<input onchange="this.form.submit();"
+	<input onclick="window.location.href='/profile/Clean';"
 		type="radio" name="lift" value="Clean"> Clean
-	<input onchange="this.form.submit();"
+	<input onclick="window.location.href='/profile/Jerk';"
 		type="radio" name="lift" value="Jerk"> Jerk
-	<input onchange="this.form.submit();"
+	<input onclick="window.location.href='/profile';"
 		type="radio" name="lift" value="Clear"> Clear filter
-</form>
 
 {% for result in results %}
 <hr>
@@ -25,6 +23,7 @@ weight: {{ result.weight }}
 <br>
 
 date: {{result.date}}
+
 <form action="/result/{{result.id}}" method="POST">
 	<input type="submit" value="Open">
 </form>
@@ -34,6 +33,7 @@ date: {{result.date}}
 <hr>
 {% endfor %}
 
+<br>
 <button onclick="window.location.href='/logout';">Log out</button>
 <br>
 <button onclick="window.location.href='/';">Home</button>
