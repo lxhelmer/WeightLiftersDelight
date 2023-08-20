@@ -266,7 +266,7 @@ def remove(res_id):
     return redirect("/profile")
 
 
-@app.route("/result/<res_id>", methods=["POST"])
+@app.route("/result/<res_id>", methods=["POST", "GET"])
 def result_page(res_id):
     if not_login():
         return redirect("/landing")
@@ -275,22 +275,17 @@ def result_page(res_id):
 
     query = text("""
                  SELECT results.id, users.username, results.public, results.weight,
-                 movements.lift, results.date, classes.sport, classes.division,
-                 classes.max_weight, results.like_amount
+                 movements.lift, results.date,
+                 results.like_amount
                  FROM results
                  LEFT JOIN movements
                  ON results.movement_id= movements.id
                  LEFT JOIN users
                  ON results.user_id = users.id
-                 LEFT JOIN classes
-                 ON users.class_id = classes.id
                  """)
     result = db.session.execute(query, {"id": res_id})
     lift_info = result.fetchone()
 
-    print(user)
-    print(lift_info.username)
-    print(lift_info.public)
     if lift_info.username == user or lift_info.public:
         query = text("""
                      SELECT comment
@@ -374,3 +369,30 @@ def send_comp():
     db.session.execute(comp_query, {"n": name, "s": sport})
     db.session.commit()
     return redirect("/")
+
+
+@app.route("/like/<res_id>", methods=["POST"])
+def like(res_id):
+    like_query = text("""
+                      UPDATE results
+                      SET like_amount = like_amount + 1
+                      WHERE id = :id
+                      """)
+    db.session.execute(like_query,{"id":res_id})
+    db.session.commit()
+    return redirect("/result/" + res_id)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
