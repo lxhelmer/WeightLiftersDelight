@@ -26,6 +26,10 @@ Luo virtuaaliympäristö komennolla
 ```bash 
 python3 -m venv venv
 ```
+käynnistä virtuaaliympäristö komennolla 
+```bash 
+source venv/bin/activate
+```
 
 Asenna riippuvuuder komennolla
 ```bash
