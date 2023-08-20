@@ -41,6 +41,12 @@ Lataa tietokantarakenne tietokantaan komennolla ohjelma käyttää oletusarvona 
 psql <tietokannan nimi> < schema.sql
 ```
 
+Voit luoda urheilulajit sekä kilpailuluokat seuraavilla komennoilla:
+```bash
+psql <tietokannan nimi> <  create_classes.sql
+psql <tietokannan nimi> <  create_movements.sql
+```
+
 Käynnistä ohjelma komennolla
 ```bash
 flask run
@@ -60,3 +66,15 @@ Ohjelmassa voi nyt tehdä ne asiat mitkä olisin halunnut saada valmiiksi ennen 
 Käyttäjä voi myös filtteröidä tuloksia eri nostotyyppien mukaan. Käyttäjälle näytetään vain käyttäjäkohtaiset tulokset. Käyttäjänhallinta on toteutettu hashattyjä salasanoja säilyttäen sekä flaskin sessionia käyttäen.
 Käyttäjä profiili on kaikille käyttäjille saman url '/profile' takana mutta tiedon filtteröinti tapahtuu tietokanta tasolla eikä muitten käyttäjien tietoon kosketa. Jos käyttäjä ei ole kirjautunut sisään ohjataan hänet '/landing'
 sivulle mikä on kirjautumis/registeröitymis sivu.
+
+## Ohjelman tila 20.8.
+Ohjelma on hyvällä mallilla, puutteet ovat lähinnä käyttöliittymään liittyviä bugeja ja pieniä ominaisuuksia.
+Käyttäjä voi:
+    Luoda käyttäjän ja valita sille normaalin tai admin tilan.
+    Luonnin yhteydessä valita lajinsa sekä painoluokkansa, ohjelma valitsee oikeat luokat ilmoitetun painon mukaan.
+    Lisätä tuloksia ja valita minkä lajin tulos.
+    Tulokselle voi lisätä tiedon jos se on suoritettu kilpailussa.
+    Admin käyttäjä voi lisätä kilpailuja.
+    Admin käyttäjällä on oma näkymä joka on tällä hetkellä /users polun takana nappi etusivulla.
+    Users välilehdeltä admin voi hallita käyttäjiä sekä heidän tuloksiaan.
+
