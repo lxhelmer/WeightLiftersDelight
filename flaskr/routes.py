@@ -317,12 +317,12 @@ def users():
     query = text("""
                  SELECT users.id, users.username,
                  wl.max_weight AS wl_max, wl.division AS wl_div,
-                 pl.max_weight AS pl_max, pl.division AS PL_div
+                 pl.max_weight AS pl_max, pl.division AS pl_div
                  FROM users
                  LEFT JOIN classes AS wl
                  ON users.wl_class_id = wl.id
-                 LEFT JOIN classes as PL
-                 ON users.pl_class_id = wl.id
+                 LEFT JOIN classes as pl
+                 ON users.pl_class_id = pl.id
                  """)
     result = db.session.execute(query)
     users_list = result.fetchall()
