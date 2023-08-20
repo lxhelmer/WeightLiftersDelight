@@ -15,6 +15,26 @@
 	<input onclick="window.location.href='/profile';"
 		type="radio" name="lift" value="Clear"> Clear filter
 
+	| Sort by:
+	<select name="sort" id="sort">
+		{% for order in orders%}
+
+		{% if path == '/profile' %}
+		<option 
+			    onclick="window.location.href=window.location.href +'/%/{{order[1]}}'";> s{{ order[0] }}
+		</option>
+		{% else %}
+		<option 
+		    onclick="window.location.href=
+		    window.location.href.slice(0,-4) +'/{{order[1]}}'";> 
+		{{ order[0] }}
+		</option>
+
+		{% endif %}
+		{% endfor %}
+	</select>
+	
+
 {% for result in results %}
 <hr>
 lift: {{result.lift}}

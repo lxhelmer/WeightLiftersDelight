@@ -57,31 +57,47 @@ def index(message=""):
     comp_result = db.session.execute(comp_query)
     competitions = comp_result.fetchall()
 
+
     return render_template(
             "index.html", entrys=entrys, notif=notif, error=error,
-            publics=publics, sports=["WL","PL"], admin=admin, comps=competitions)
+            publics=publics, sports=["WL","PL"],
+            admin=admin, comps=competitions)
 
 
 @app.route("/profile", methods=["GET","POST"])
-@app.route("/profile/<filter>", methods=["GET","POST"])
-def profile(filter="%"):
+@app.route("/profile/<filter>/<order>", methods=["GET","POST"])
+def profile(filter="%", order="dnf"):
     if not_login():
         return redirect("/landing")
+
+    orders = {
+            "whf": ("weight high first","whf","results.weight DESC"),
+            "wlf": ("weight low first","wlf", "results.weight ASC"),
+            "dnf": ("date new first","dnf", "results.date DESC"),
+            "dof": ("date old first","dof", "results.date ASC")
+            }
+    order = orders[order][2]
 
     user = session["username"]
     user_id = db.session.execute(
         text("""SELECT id FROM users WHERE username=:u"""), {"u": user})
     uid = user_id.fetchone().id
 
+
+    #The order parameter is not a security risk since
+    #it's value is polled from the hardcoded dictionary
+
     res = db.session.execute(text(
         """
         SELECT results.id,results.weight,results.date,movements.lift FROM results
         LEFT JOIN movements ON results.movement_id = movements.id
-        WHERE results.user_id =:u AND movements.lift LIKE :f ORDER BY results.date DESC
-        """), {"u": uid, "f": filter})
+        WHERE results.user_id =:u AND movements.lift LIKE :f ORDER BY """ + order)
+        , {"u": uid, "f": filter})
     results = res.fetchall()
 
-    return render_template("profile.html", results=results)
+
+    return render_template("profile.html", results=results,
+                           orders=orders.values(), path=request.path)
 
 
 
