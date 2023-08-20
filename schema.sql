@@ -31,7 +31,10 @@
 		comment TEXT,
 		result_id INTEGER REFERENCES results(id) ON DELETE CASCADE
 	);
-	CREATE TABLE competition (
+	CREATE TABLE competitions (
 		id SERIAL PRIMARY KEY,
-		name TEXT
+		name TEXT,
+		sport TEXT,
+		start_date DATE,
+		end_date DATE
 	);

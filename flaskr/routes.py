@@ -330,3 +330,19 @@ def user(id, selected="%"):
     
 
     return render_template("user.html", results=results, user=user)
+
+@app.route("/sendcomp", methods=["POST"])
+def send_comp():
+    if not_login():
+        return redirect("/landing")
+    if not is_admin():
+        abort(403)
+    sport = request.form["sport"]
+    name = request.form["name"]
+
+    comp_query = text("""
+                      INSERT INTO competitions (name, sport) VALUES (:n, :s)
+                      """)
+    db.session.execute(comp_query, {"n":name, "s":sport})
+    db.session.commit()
+    return redirect("/")
