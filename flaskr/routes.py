@@ -7,11 +7,9 @@ from .db import db
 
 def not_login():
     return session.get("username") is None
+
 def is_admin():
-    if not session.get("admin"):
-        abort(403)
-    else:
-        return True
+    return session.get("admin")
         
 @app.route("/", methods=["GET","POST"])
 @app.route("/<message>")
@@ -42,7 +40,7 @@ def index(message=""):
     query = text(
         """
         SELECT results.id,results.weight,results.date,
-        movements.lift, users.username, users.admin 
+        movements.lift, users.username, users.admin
         FROM results
         LEFT JOIN movements 
         ON results.movement_id = movements.id
@@ -129,8 +127,8 @@ def login():
     user_hash = user.password
     if check_password_hash(user_hash, pswd_tx):
         session["username"] = username
-        if user.admin:
-            session["admin"] = True
+        session["admin"] = user.admin
+
         return redirect("/")
     return redirect("/landing")
 
@@ -284,7 +282,8 @@ def result_page(id):
 def users():
     if not_login():
         return redirect("/landing")
-    is_admin()
+    if not is_admin():
+        abort(403)
     query = text("""
                  SELECT users.id, users.username, 
                  wl.max_weight AS wl_max, wl.division AS wl_div,
@@ -307,7 +306,8 @@ def users():
 def user(id, selected="%"):
     if not_login():
         return redirect("/landing")
-    is_admin()
+    if not is_admin():
+        abort(403)
 
     result = db.session.execute(text(
         """

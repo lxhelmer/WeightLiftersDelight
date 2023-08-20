@@ -24,9 +24,10 @@
 </form>
 
 <button onclick="window.location.href='/profile';">To profile</button>
-
-{% for result in publics %}
 <hr>
+
+<h3>Public results:</h3>
+{% for result in publics %}
 lift: {{result.lift}}
 <br>
 weight: {{ result.weight }}
@@ -41,12 +42,12 @@ date: {{result.date}}
 {% endfor %}
 
 {% if admin %}
+<h3>Add competition:</h3>
 <form action="/sendcomp" method="POST">
-	
 	Competition name:
 	<input type="text" name="name">
 	<br>
-	<select name="lift" id="lift">
+	<select name="sport" id="sport">
 		{% for sport in sports %}
 		<option> {{ sport }}
 		{% endfor %}
