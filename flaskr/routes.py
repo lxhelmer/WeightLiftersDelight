@@ -1,17 +1,20 @@
 from datetime import datetime
-from .app import app
 from flask import render_template, request, redirect, session, abort
 from sqlalchemy.sql import text
 from werkzeug.security import check_password_hash, generate_password_hash
+from .app import app
 from .db import db
+
 
 def not_login():
     return session.get("username") is None
 
+
 def is_admin():
     return session.get("admin")
-        
-@app.route("/", methods=["GET","POST"])
+
+
+@app.route("/", methods=["GET", "POST"])
 @app.route("/<message>")
 def index(message=""):
     # This is not the most elegant way of
@@ -36,15 +39,15 @@ def index(message=""):
             select lift from movements
         """))
     entrys = lifts.fetchall()
-    
+
     res_query = text(
         """
         SELECT results.id,results.weight,results.date,
         movements.lift, users.username, users.admin
         FROM results
-        LEFT JOIN movements 
+        LEFT JOIN movements
         ON results.movement_id = movements.id
-        LEFT JOIN users 
+        LEFT JOIN users
         ON results.user_id = users.id
         WHERE results.public ORDER BY results.date DESC
         """)
@@ -57,25 +60,24 @@ def index(message=""):
     comp_result = db.session.execute(comp_query)
     competitions = comp_result.fetchall()
 
-
     return render_template(
-            "index.html", entrys=entrys, notif=notif, error=error,
-            publics=publics, sports=["WL","PL"],
-            admin=admin, comps=competitions)
+        "index.html", entrys=entrys, notif=notif, error=error,
+        publics=publics, sports=["WL", "PL"],
+        admin=admin, comps=competitions)
 
 
-@app.route("/profile", methods=["GET","POST"])
-@app.route("/profile/<filter>/<order>", methods=["GET","POST"])
-def profile(filter="%", order="dnf"):
+@app.route("/profile", methods=["GET", "POST"])
+@app.route("/profile/<filter>/<order>", methods=["GET", "POST"])
+def profile(selected="%", order="dnf"):
     if not_login():
         return redirect("/landing")
 
     orders = {
-            "whf": ("weight high first","whf","results.weight DESC"),
-            "wlf": ("weight low first","wlf", "results.weight ASC"),
-            "dnf": ("date new first","dnf", "results.date DESC"),
-            "dof": ("date old first","dof", "results.date ASC")
-            }
+        "whf": ("weight high first", "whf", "results.weight DESC"),
+        "wlf": ("weight low first", "wlf", "results.weight ASC"),
+        "dnf": ("date new first", "dnf", "results.date DESC"),
+        "dof": ("date old first", "dof", "results.date ASC")
+    }
     order = orders[order][2]
 
     user = session["username"]
@@ -83,22 +85,20 @@ def profile(filter="%", order="dnf"):
         text("""SELECT id FROM users WHERE username=:u"""), {"u": user})
     uid = user_id.fetchone().id
 
-
-    #The order parameter is not a security risk since
-    #it's value is polled from the hardcoded dictionary
+    # The order parameter is not a security risk since
+    # it's value is polled from the hardcoded dictionary
 
     res = db.session.execute(text(
         """
         SELECT results.id,results.weight,results.date,movements.lift FROM results
         LEFT JOIN movements ON results.movement_id = movements.id
-        WHERE results.user_id =:u AND movements.lift LIKE :f ORDER BY """ + order)
-        , {"u": uid, "f": filter})
+        WHERE results.user_id =:u
+        AND movements.lift
+        LIKE :s ORDER BY """ + order), {"u": uid, "s": selected})
     results = res.fetchall()
-
 
     return render_template("profile.html", results=results,
                            orders=orders.values(), path=request.path)
-
 
 
 @app.route("/sendres", methods=["POST"])
@@ -130,11 +130,16 @@ def send_result():
         text("""SELECT id FROM users WHERE username=:u"""), {"u": user})
     uid = user_id.fetchone().id
 
-
     query = text(
         """INSERT INTO results
         (user_id, movement_id, weight, date, public, comp_id) values (:a,:b,:c,:d,:p, :cid)""")
-    db.session.execute(query, {"a": uid, "b": lift_t, "c": weight, "d": date, "p":public, "cid":comp})
+    db.session.execute(query,
+                       {"a": uid,
+                        "b": lift_t,
+                        "c": weight,
+                        "d": date,
+                        "p": public,
+                        "cid": comp})
     db.session.commit()
     return redirect("/ok")
 
@@ -183,20 +188,19 @@ def new_user():
     weightlifting = request.form["weightlifting"]
     powerlifting = request.form["powerlifting"]
     division = request.form["division"]
-    weight = request.form["weight"] 
+    weight = request.form["weight"]
 
     wl_class = None
     pl_class = None
 
     if weightlifting:
-        wl_query= text("""
+        wl_query = text("""
                            SELECT id
                            FROM classes WHERE sport = 'WL' AND division =:d AND max_weight > :w
                            ORDER by max_weight ASC
                            """)
-        result = db.session.execute(wl_query, {"d":division,"w":weight})
+        result = db.session.execute(wl_query, {"d": division, "w": weight})
         wl_class = result.fetchone().id
-
 
     if powerlifting:
         pl_query = text("""
@@ -204,13 +208,15 @@ def new_user():
                            FROM classes WHERE sport = 'PL' AND division =:d AND max_weight > :w
                            ORDER by max_weight ASC
                            """)
-        result = db.session.execute(pl_query, {"d":division,"w":weight})
+        result = db.session.execute(pl_query, {"d": division, "w": weight})
         pl_class = result.fetchone().id
 
     pswd_hs = generate_password_hash(pswd_tx)
     query = text(
-        """INSERT INTO users (username, password, admin, wl_class_id, pl_class_id) VALUES (:u, :p, :a, :wl, :pl)"""
-        )
+        """INSERT INTO users 
+        (username, password, admin, wl_class_id, pl_class_id)
+        VALUES (:u, :p, :a, :wl, :pl)"""
+    )
     db.session.execute(query, {"u": username,
                                "p": pswd_hs,
                                "a": admin,
@@ -224,44 +230,44 @@ def new_user():
 def landing():
     return render_template("landing.html")
 
-@app.route("/remove/<id>", methods=["POST"])
-def remove(id):
+
+@app.route("/remove/<res_id>", methods=["POST"])
+def remove(res_id):
     if not_login():
         return redirect("/landing")
     if is_admin():
         query = text(
-                """
+            """
                      DELETE FROM results
-                     WHERE results.id IN 
-                     (SELECT results.id 
-                      FROM results LEFT JOIN users 
+                     WHERE results.id IN
+                     (SELECT results.id
+                      FROM results LEFT JOIN users
                       ON results.user_id = users.id
                       WHERE results.id =:id)
                      RETURNING results.user_id
                 """)
-        result = db.session.execute(query, {"id":id,})
+        result = db.session.execute(query, {"id": res_id, })
         user_id = result.fetchone().user_id
         db.session.commit()
         return redirect("/user/" + str(user_id))
 
-        
     user = session["username"]
     query = text(
-            """
+        """
                  DELETE FROM results
-                 WHERE results.id IN 
-                 (SELECT results.id 
-                  FROM results LEFT JOIN users 
+                 WHERE results.id IN
+                 (SELECT results.id
+                  FROM results LEFT JOIN users
                   ON results.user_id = users.id
                   WHERE results.id =:id AND users.username=:user)
             """)
-    db.session.execute(query, {"id":id, "user":user})
+    db.session.execute(query, {"id": id, "user": user})
     db.session.commit()
     return redirect("/profile")
-    
-    
-@app.route("/result/<id>", methods=["POST"])
-def result_page(id):
+
+
+@app.route("/result/<res_id>", methods=["POST"])
+def result_page(res_id):
     if not_login():
         return redirect("/landing")
 
@@ -279,7 +285,7 @@ def result_page(id):
                  LEFT JOIN classes
                  ON users.class_id = classes.id
                  """)
-    result = db.session.execute(query, {"id":id})
+    result = db.session.execute(query, {"id": res_id})
     lift_info = result.fetchone()
 
     print(user)
@@ -291,18 +297,17 @@ def result_page(id):
                      FROM comments
                      WHERE result_id =:lift_id
                      """)
-        result = db.session.execute(query, {"lift_id":lift_info.id})
+        result = db.session.execute(query, {"lift_id": lift_info.id})
         comments = result.fetchall()
 
         return render_template(
-                "result.html",
-                info = lift_info,
-                comments = comments,
-                )
+            "result.html",
+            info=lift_info,
+            comments=comments,
+        )
     return redirect("/profile")
 
-    
-    
+
 @app.route("/users")
 def users():
     if not_login():
@@ -310,7 +315,7 @@ def users():
     if not is_admin():
         abort(403)
     query = text("""
-                 SELECT users.id, users.username, 
+                 SELECT users.id, users.username,
                  wl.max_weight AS wl_max, wl.division AS wl_div,
                  pl.max_weight AS pl_max, pl.division AS PL_div
                  FROM users
@@ -320,15 +325,14 @@ def users():
                  ON users.pl_class_id = wl.id
                  """)
     result = db.session.execute(query)
-    users = result.fetchall()
+    users_list = result.fetchall()
 
-    
+    return render_template("users.html", users=users_list)
 
-    return render_template("users.html", users=users)
 
-@app.route("/user/<id>/<selected>", methods=["POST", "GET"])
-@app.route("/user/<id>", methods=["POST", "GET"])
-def user(id, selected="%"):
+@app.route("/user/<usr_id>/<selected>", methods=["POST", "GET"])
+@app.route("/user/<usr_id>", methods=["POST", "GET"])
+def user_page(usr_id, selected="%"):
     if not_login():
         return redirect("/landing")
     if not is_admin():
@@ -345,16 +349,15 @@ def user(id, selected="%"):
         """), {"u": id, "s": selected})
     results = result.fetchall()
 
-    #There is no nice way of getting the name when there is
-    #no results for that users
+    # There is no nice way of getting the name when there is
+    # no results for that users
     user_result = db.session.execute(
-            text("""SELECT users.username, users.id FROM users WHERE users.id =:id"""),
-            {"id": id}
-            )
+        text("""SELECT users.username, users.id FROM users WHERE users.id =:id"""), {
+            "id": usr_id})
     user = user_result.fetchone()
-    
 
     return render_template("user.html", results=results, user=user)
+
 
 @app.route("/sendcomp", methods=["POST"])
 def send_comp():
@@ -368,6 +371,6 @@ def send_comp():
     comp_query = text("""
                       INSERT INTO competitions (name, sport) VALUES (:n, :s)
                       """)
-    db.session.execute(comp_query, {"n":name, "s":sport})
+    db.session.execute(comp_query, {"n": name, "s": sport})
     db.session.commit()
     return redirect("/")
