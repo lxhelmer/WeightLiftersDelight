@@ -68,20 +68,20 @@ Käyttäjä profiili on kaikille käyttäjille saman url '/profile' takana mutta
 sivulle mikä on kirjautumis/registeröitymis sivu.
 
 ## Ohjelman tila 20.8.
-Ohjelma on hyvällä mallilla, puutteet ovat lähinnä käyttöliittymään liittyviä bugeja ja pieniä ominaisuuksia.
+Ohjelma on hyvällä mallilla, puutteet ovat lähinnä käyttöliittymään liittyviä bugeja ja pieniä ominaisuuksia.  
 Käyttäjä voi:
-    Luoda käyttäjän ja valita sille normaalin tai admin tilan.  
-    Luonnin yhteydessä valita lajinsa sekä painoluokkansa, ohjelma valitsee oikeat luokat ilmoitetun painon mukaan.  
-    Lisätä tuloksia ja valita minkä lajin tulos.  
-    Tulokselle voi lisätä tiedon jos se on suoritettu kilpailussa.  
-    Admin käyttäjä voi lisätä kilpailuja.  
-    Admin käyttäjällä on oma näkymä joka on tällä hetkellä /users polun takana nappi etusivulla.  
-    Users välilehdeltä admin voi hallita käyttäjiä sekä heidän tuloksiaan.  
-    Sekä Adminin näkymässä että normaalissa /profile näkymässä voi filtteröidä tuloksia liikeen mukaan.  
-    /profile näkymässä voi myös järjestää tuloksia eri atribuuttien mukaan, järjestäminen ei vielä toimi yhdessä
-    filtterin kanssa.  
-    Puuttuvia toimintoja ovat tuloksien kommentointi sekä tykkääminen. Lisäksi koodin laadun kannalta tulee vielä
-    jakaa massiiviseksi paisunut routes.py omiin toiminnallisuuskohtaisiin tiedostoihin.  
+    - Luoda käyttäjän ja valita sille normaalin tai admin tilan.
+    - Luonnin yhteydessä valita lajinsa sekä painoluokkansa, ohjelma valitsee oikeat luokat ilmoitetun painon mukaan.
+    - Lisätä tuloksia ja valita minkä lajin tulos.
+    - Tulokselle voi lisätä tiedon jos se on suoritettu kilpailussa.
+    - Admin käyttäjä voi lisätä kilpailuja.
+    -Admin käyttäjällä on oma näkymä joka on tällä hetkellä /users polun takana nappi etusivulla.
+    -Users välilehdeltä admin voi hallita käyttäjiä sekä heidän tuloksiaan.
+    -Sekä Adminin näkymässä että normaalissa /profile näkymässä voi filtteröidä tuloksia liikeen mukaan.
+    -/profile näkymässä voi myös järjestää tuloksia eri atribuuttien mukaan, järjestäminen ei vielä toimi yhdessä
+    filtterin kanssa.
+    -Puuttuvia toimintoja ovat tuloksien kommentointi sekä tykkääminen. Lisäksi koodin laadun kannalta tulee vielä
+    jakaa massiiviseksi paisunut routes.py omiin toiminnallisuuskohtaisiin tiedostoihin.
 
 
 Onko projektin laajuus hyvään arviointiin nähden riittävä vai tarvitseeko vielä keksiä esim. Monipuolisempaa tietokannan käyttöä.
