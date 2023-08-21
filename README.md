@@ -82,7 +82,7 @@ Käyttäjä voi:
 - /profile näkymässä voi myös järjestää tuloksia eri atribuuttien mukaan, järjestäminen ei vielä toimi yhdessä
 filtterin kanssa.
 - Puuttuvia toimintoja ovat tuloksien kommentointi sekä tykkääminen. Lisäksi koodin laadun kannalta tulee vielä
-jakaa massiiviseksi paisunut routes.py omiin toiminnallisuuskohtaisiin tiedostoihin.
+jakaa massiiviseksi paisunut routes.py omiin toiminnallisuuskohtaisiin tiedostoihin. (Tykkääminen lisätty 21.8.)
 
 
 Onko projektin laajuus hyvään arviointiin nähden riittävä vai tarvitseeko vielä keksiä esim. Monipuolisempaa tietokannan käyttöä.

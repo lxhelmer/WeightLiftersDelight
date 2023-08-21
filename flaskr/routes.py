@@ -1,13 +1,13 @@
-from datetime import datetime
 from flask import render_template, request, redirect, session, abort
 from sqlalchemy.sql import text
 from werkzeug.security import check_password_hash, generate_password_hash
 from .app import app
 from .db import db
+from . import results
 
 
 def not_login():
-    return session.get("username") is None
+    return session.get("user") is None
 
 
 def is_admin():
@@ -80,13 +80,12 @@ def profile(selected="%", order="dnf"):
     }
     order = orders[order][2]
 
-    user = session["username"]
-    user_id = db.session.execute(
-        text("""SELECT id FROM users WHERE username=:u"""), {"u": user})
-    uid = user_id.fetchone().id
+    user = session["user"]["username"]
+
+    user_id = session["user"]["id"]
 
     # The order parameter is not a security risk since
-    # it's value is polled from the hardcoded dictionary
+    # it's value is polled from the ardcoded dictionary
 
     res = db.session.execute(text(
         """
@@ -106,41 +105,19 @@ def send_result():
     if not_login():
         return redirect("/landing")
 
-    user = session["username"]
+    user = session["user"]
     lift = request.form["lift"]
     weight = request.form["weight"]
     public = request.form["public"]
-
     comp = request.form["comp"]
-    if comp == "":
-        comp = None
+
     try:
         weight = float(weight)
     except ValueError:
         return redirect("/fail")
-    date = datetime.today().strftime("%Y-%m-%d")
 
-    # I don"t like this way of getting the lift
-    # id but it handles the changes and new lifts well
-    lift_type = db.session.execute(
-        text("""SELECT id FROM movements WHERE lift=:x"""), {"x": lift})
-    lift_t = lift_type.fetchone().id
+    results.add_result(user,lift, weight, public, comp)
 
-    user_id = db.session.execute(
-        text("""SELECT id FROM users WHERE username=:u"""), {"u": user})
-    uid = user_id.fetchone().id
-
-    query = text(
-        """INSERT INTO results
-        (user_id, movement_id, weight, date, public, comp_id) values (:a,:b,:c,:d,:p, :cid)""")
-    db.session.execute(query,
-                       {"a": uid,
-                        "b": lift_t,
-                        "c": weight,
-                        "d": date,
-                        "p": public,
-                        "cid": comp})
-    db.session.commit()
     return redirect("/ok")
 
 
@@ -156,7 +133,7 @@ def login():
         return redirect("/")
     user_hash = user.password
     if check_password_hash(user_hash, pswd_tx):
-        session["username"] = username
+        session["user"] = {"username":username,"id":user.id}
         session["admin"] = user.admin
 
         return redirect("/")
@@ -168,7 +145,7 @@ def logout():
     if not_login():
         return redirect("/landing")
 
-    del session["username"]
+    del session["user"]
     del session["admin"]
     return redirect("/")
 
@@ -282,6 +259,7 @@ def result_page(res_id):
                  ON results.movement_id= movements.id
                  LEFT JOIN users
                  ON results.user_id = users.id
+                 WHERE results.id = :id
                  """)
     result = db.session.execute(query, {"id": res_id})
     lift_info = result.fetchone()
