@@ -64,43 +64,8 @@ def index(message=""):
 def profile():
     if not_login():
         return redirect("/landing")
-    selected = "%"
-    order = "dnf"
-
-    if session.get("selected"):
-        selected = session["selected"]
-
-    if session.get("order"):
-        order = session["order"]
+    return user_page(session["user"]["id"])
     
-    orders = {
-        "whf": ("weight high first", "whf", "results.weight DESC"),
-        "wlf": ("weight low first", "wlf", "results.weight ASC"),
-        "dnf": ("date new first", "dnf", "results.date DESC"),
-        "dof": ("date old first", "dof", "results.date ASC")
-    }
-
-    order = orders[order][2]
-
-    user = session["user"]["username"]
-
-    user_id = session["user"]["id"]
-
-    # The order parameter is not a security risk since
-    # it's value is polled from the hardcoded dictionary
-
-    res = db.session.execute(text(
-        """
-        SELECT results.id,results.weight,results.date,movements.lift FROM results
-        LEFT JOIN movements ON results.movement_id = movements.id
-        WHERE results.user_id =:u
-        AND movements.lift
-        LIKE :s ORDER BY """ + order), {"u": user_id, "s": selected})
-    results = res.fetchall()
-
-    return render_template("profile.html", results=results,
-                           orders=orders.values(), path=request.path)
-
 @app.route("/setselected", methods=["POST"])
 def setSelected():
     session["selected"] = request.form["lift"]
@@ -317,12 +282,29 @@ def users():
 
 
 @app.route("/user/<usr_id>", methods=["POST", "GET"])
-def user_page(usr_id, selected="%"):
+def user_page(usr_id):
     if not_login():
         return redirect("/landing")
     if not is_admin():
         abort(403)
     
+    selected = "%"
+    order = "dnf"
+
+    if session.get("selected"):
+        selected = session["selected"]
+
+    if session.get("order"):
+        order = session["order"]
+
+    orders = {
+        "whf": ("weight high first", "whf", "results.weight DESC"),
+        "wlf": ("weight low first", "wlf", "results.weight ASC"),
+        "dnf": ("date new first", "dnf", "results.date DESC"),
+        "dof": ("date old first", "dof", "results.date ASC")
+    }
+
+    order = orders[order][2]
 
     result = db.session.execute(text(
         """
@@ -331,13 +313,13 @@ def user_page(usr_id, selected="%"):
         FROM results
         LEFT JOIN movements ON results.movement_id = movements.id
         LEFT JOIN users ON results.user_id = users.id
-        WHERE results.user_id =:u AND movements.lift LIKE :s ORDER BY results.date DESC
-        """), {"u": id, "s": selected})
+        WHERE results.user_id =:u AND movements.lift LIKE :s
+        """), {"u": usr_id, "s": selected})
     results = result.fetchall()
 
-    user = session["user"]["username"]
+    user = session["user"]
 
-    return render_template("user.html", results=results, user=user)
+    return render_template("user.html", results=results, user=user, orders=orders.values())
 
 
 @app.route("/sendcomp", methods=["POST"])
