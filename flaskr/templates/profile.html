@@ -1,39 +1,33 @@
 <!doctype html>
 <Title>WLD</Title>
 <h1>Your results {{session.username}}</h1>
+<form action="/setselected" method="POST">
 
-	<input onclick="window.location.href='/profile/Squat';"
+	<input onclick="this.form.submit()"
 		type="radio" name="lift" value="Squat"> Squat
-	<input onclick="window.location.href='/profile/Deadlift';"
-		type="radio" name="lift" value="DL"> DL
-	<input onclick="window.location.href='/profile/Bench';"
+	<input onclick="this.form.submit()"
 		type="radio" name="lift" value="Bench"> Bench
-	<input onclick="window.location.href='/profile/Clean';"
-		type="radio" name="lift" value="Clean"> Clean
-	<input onclick="window.location.href='/profile/Jerk';"
-		type="radio" name="lift" value="Jerk"> Jerk
-	<input onclick="window.location.href='/profile';"
-		type="radio" name="lift" value="Clear"> Clear filter
+	<input onclick="this.form.submit()"
+		type="radio" name="lift" value="Deadlift"> Deadlift
+	<input onclick="this.form.submit()"
+		type="radio" name="lift" value="Snatch"> Snatch
+	<input onclick="this.form.submit()"
+		type="radio" name="lift" value="C&J"> Clean & Jerk
+	<input onclick="this.form.submit()"
+		type="radio" name="lift" value="%"> Clear filter
+</form>
 
+<form action="/setorder" method="POST">
 	| Sort by:
-	<select name="sort" id="sort">
-		{% for order in orders%}
-
-		{% if path == '/profile' %}
-		<option 
-			    onclick="window.location.href=window.location.href +'/%/{{order[1]}}'";> s{{ order[0] }}
-		</option>
-		{% else %}
-		<option 
-		    onclick="window.location.href=
-		    window.location.href.slice(0,-4) +'/{{order[1]}}'";> 
+	<select name="order" id="order">
+		{% for order in orders %}
+		<option	onclick="this.form.submit()"
+			value={{ order[1] }}>
 		{{ order[0] }}
 		</option>
-
-		{% endif %}
 		{% endfor %}
 	</select>
-	
+</form>
 
 {% for result in results %}
 <hr>

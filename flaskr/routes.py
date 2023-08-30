@@ -67,17 +67,25 @@ def index(message=""):
 
 
 @app.route("/profile", methods=["GET", "POST"])
-@app.route("/profile/<filter>/<order>", methods=["GET", "POST"])
-def profile(selected="%", order="dnf"):
+def profile():
     if not_login():
         return redirect("/landing")
+    selected = "%"
+    order = "dnf"
 
+    if session.get("selected"):
+        selected = session["selected"]
+
+    if session.get("order"):
+        order = session["order"]
+    
     orders = {
         "whf": ("weight high first", "whf", "results.weight DESC"),
         "wlf": ("weight low first", "wlf", "results.weight ASC"),
         "dnf": ("date new first", "dnf", "results.date DESC"),
         "dof": ("date old first", "dof", "results.date ASC")
     }
+
     order = orders[order][2]
 
     user = session["user"]["username"]
@@ -85,7 +93,7 @@ def profile(selected="%", order="dnf"):
     user_id = session["user"]["id"]
 
     # The order parameter is not a security risk since
-    # it's value is polled from the ardcoded dictionary
+    # it's value is polled from the hardcoded dictionary
 
     res = db.session.execute(text(
         """
@@ -93,11 +101,22 @@ def profile(selected="%", order="dnf"):
         LEFT JOIN movements ON results.movement_id = movements.id
         WHERE results.user_id =:u
         AND movements.lift
-        LIKE :s ORDER BY """ + order), {"u": uid, "s": selected})
+        LIKE :s ORDER BY """ + order), {"u": user_id, "s": selected})
     results = res.fetchall()
 
     return render_template("profile.html", results=results,
                            orders=orders.values(), path=request.path)
+
+@app.route("/setselected", methods=["POST"])
+def setSelected():
+    session["selected"] = request.form["lift"]
+    print(request.form["lift"])
+    return redirect("/profile")
+
+@app.route("/setorder", methods=["POST"])
+def setOrder():
+    session["order"] = request.form["order"]
+    return redirect("/profile")
 
 
 @app.route("/sendres", methods=["POST"])
@@ -248,7 +267,7 @@ def result_page(res_id):
     if not_login():
         return redirect("/landing")
 
-    user = session["username"]
+    user = session["user"]["username"]
 
     query = text("""
                  SELECT results.id, users.username, results.public, results.weight,
