@@ -4,14 +4,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from .app import app
 from .db import db
 from . import results
+from .privileges import not_login, is_admin
 
-
-def not_login():
-    return session.get("user") is None
-
-
-def is_admin():
-    return session.get("admin")
 
 
 @app.route("/", methods=["GET", "POST"])
