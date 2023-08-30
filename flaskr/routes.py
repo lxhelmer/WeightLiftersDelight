@@ -241,7 +241,7 @@ def remove(res_id):
         db.session.commit()
         return redirect("/user/" + str(user_id))
 
-    user = session["username"]
+    user = session["user"]["username"]
     query = text(
         """
                  DELETE FROM results
@@ -316,13 +316,13 @@ def users():
     return render_template("users.html", users=users_list)
 
 
-@app.route("/user/<usr_id>/<selected>", methods=["POST", "GET"])
 @app.route("/user/<usr_id>", methods=["POST", "GET"])
 def user_page(usr_id, selected="%"):
     if not_login():
         return redirect("/landing")
     if not is_admin():
         abort(403)
+    
 
     result = db.session.execute(text(
         """
@@ -335,12 +335,7 @@ def user_page(usr_id, selected="%"):
         """), {"u": id, "s": selected})
     results = result.fetchall()
 
-    # There is no nice way of getting the name when there is
-    # no results for that users
-    user_result = db.session.execute(
-        text("""SELECT users.username, users.id FROM users WHERE users.id =:id"""), {
-            "id": usr_id})
-    user = user_result.fetchone()
+    user = session["user"]["username"]
 
     return render_template("user.html", results=results, user=user)
 
@@ -374,6 +369,21 @@ def like(res_id):
     return redirect("/result/" + res_id)
 
 
+@app.route("/removeu/<u_id>", methods=["POST"])
+def removeu(u_id):
+    if not_login():
+        return redirect("/landing")
+    if is_admin():
+        query = text(
+            """
+                     DELETE FROM users
+                     WHERE users.id = :id
+
+                """)
+        result = db.session.execute(query, {"id": u_id})
+        db.session.commit()
+        return redirect("/users")
+    return redirect("/")
 
 
 
