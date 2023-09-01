@@ -1,5 +1,6 @@
 from flask import render_template, request, redirect, session, abort
 from sqlalchemy.sql import text
+from sqlalchemy import exc
 from werkzeug.security import check_password_hash, generate_password_hash
 from .app import app
 from .db import db
@@ -133,9 +134,18 @@ def logout():
 
 
 @app.route("/register")
-def register():
+@app.route("/register/<error>")
+def register(error=""):
+    #This is to avoid the possibility of rendering user input in html
 
-    return render_template("register.html")
+    if error == "name":
+        error = "Select another name"
+    elif error == "fields":
+        error = "Please fill all fields"
+    else:
+        error = ""
+
+    return render_template("register.html", error=error)
 
 
 @app.route("/newu", methods=["POST"])
@@ -151,6 +161,9 @@ def new_user():
 
     wl_class = None
     pl_class = None
+
+    if weight is "" or username is "" or pswd_tx is "":
+        return redirect("/register/fields")
 
     if weightlifting:
         wl_query = text("""
@@ -171,17 +184,21 @@ def new_user():
         pl_class = result.fetchone().id
 
     pswd_hs = generate_password_hash(pswd_tx)
-    query = text(
-        """INSERT INTO users 
-        (username, password, admin, wl_class_id, pl_class_id)
-        VALUES (:u, :p, :a, :wl, :pl)"""
-    )
-    db.session.execute(query, {"u": username,
-                               "p": pswd_hs,
-                               "a": admin,
-                               "wl": wl_class,
-                               "pl": pl_class})
-    db.session.commit()
+    try:
+        query = text(
+            """INSERT INTO users 
+            (username, password, admin, wl_class_id, pl_class_id)
+            VALUES (:u, :p, :a, :wl, :pl)"""
+        )
+        db.session.execute(query, {"u": username,
+                                   "p": pswd_hs,
+                                   "a": admin,
+                                   "wl": wl_class,
+                                   "pl": pl_class})
+        db.session.commit()
+    except exc.IntegrityError as e:
+        print(e)
+        return redirect("/register/name")
     return redirect("/")
 
 
@@ -225,7 +242,7 @@ def remove(res_id):
     return redirect("/profile")
 
 
-@app.route("/result/<res_id>", methods=["POST", "GET"])
+@app.route("/result/<int:res_id>", methods=["POST", "GET"])
 def result_page(res_id):
     if not_login():
         return redirect("/landing")
@@ -285,7 +302,7 @@ def users():
     return render_template("users.html", users=users_list)
 
 
-@app.route("/user/<usr_id>", methods=["POST", "GET"])
+@app.route("/user/<int:usr_id>", methods=["POST", "GET"])
 def user_page(usr_id):
     if not_login():
         return redirect("/landing")
@@ -329,7 +346,7 @@ def user_page(usr_id):
             """), {"uid":usr_id})
         lookup_usr = result_usr.fetchone()
         
-        profile = (str(usr_id) == str(user["id"]))
+        profile = (usr_id == user["id"])
 
         return render_template("user.html", results=results, user=user,
                                orders=orders.values(), profile=profile,
