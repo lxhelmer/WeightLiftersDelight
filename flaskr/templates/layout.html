@@ -1,0 +1,16 @@
+<!doctype html>
+<Title>WLD</Title>
+
+<button onclick="window.location.href='/profile';">To profile</button>
+{% if admin %}
+<button onclick="window.location.href='/users';">To users</button>
+{% endif %}
+<button onclick="window.location.href='/logout';">Log out</button>
+<hr>
+
+<h1> {% block header %} {% endblock %} </h1>
+
+{% block content %}
+{% endblock content %}
+
+

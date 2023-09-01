@@ -1,7 +1,8 @@
-<!doctype html>
-<title>WLD</title>
-<h1>Welcome to weightlifters delight</h1>
+{% extends "layout.html" %}
 
+{% block header %} Welcome to weightlifters delight {% endblock header %}
+
+{% block content %}
 <p>What do you wanna log</p>
 
 <h3 style="color:red;">{{ error }}</h1>
@@ -31,13 +32,7 @@
 	<input type="submit" value="add to log">
 </form>
 
-<button onclick="window.location.href='/profile';">To profile</button>
-{% if admin %}
-<button onclick="window.location.href='/users';">To users</button>
-{% endif %}
-<button onclick="window.location.href='/logout';">Log out</button>
 <hr>
-
 <h3>Public results:</h3>
 {% for result in publics %}
 lift: {{result.lift}}
@@ -70,3 +65,4 @@ date: {{result.date}}
 	<input type="submit" value="add to log">
 </form>
 {% endif %}
+{% endblock content %}
