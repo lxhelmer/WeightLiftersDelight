@@ -111,7 +111,7 @@ def login():
         return redirect("/")
     user_hash = user.password
     if check_password_hash(user_hash, pswd_tx):
-        session["user"] = {"username":username,"id":user.id}
+        session["user"] = {"username":username,"id":int(user.id)}
         session["admin"] = user.admin
 
         return redirect("/")
@@ -316,8 +316,11 @@ def user_page(usr_id):
             WHERE results.user_id =:u AND movements.lift LIKE :s
             """), {"u": usr_id, "s": selected})
         results = result.fetchall()
+        if len(results) == 0:
+            return redirect("/users")
 
-        profile = (usr_id == user["id"])
+
+        profile = (results[0].user_id == int(user["id"]))
 
         return render_template("user.html", results=results, user=user, orders=orders.values(), profile=profile)
 
