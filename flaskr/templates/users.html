@@ -1,8 +1,10 @@
+{% extends "layout.html" %}
+{% block content %}
 <h1> Users: </h1>
 
 {% for user in users %}
 <hr>
-{{user.username}}
+Name: {{user.username}}
 <br>
 
 CLASSES:
@@ -23,3 +25,4 @@ PL {{user.pl_div}}{{user.pl_max}}
 </form>
 <hr>
 {% endfor %}
+{% endblock content %}

@@ -66,15 +66,19 @@ def profile():
         return redirect("/landing")
     return user_page(session["user"]["id"])
     
-@app.route("/setselected", methods=["POST"])
-def setSelected():
+@app.route("/setselected/<u_id>", methods=["POST"])
+def setSelected(u_id):
     session["selected"] = request.form["lift"]
     print(request.form["lift"])
+    if is_admin():
+        return redirect("/user/"+str(u_id))
     return redirect("/profile")
 
-@app.route("/setorder", methods=["POST"])
-def setOrder():
+@app.route("/setorder/<u_id>", methods=["POST"])
+def setOrder(u_id):
     session["order"] = request.form["order"]
+    if is_admin():
+        return redirect("/user/"+(u_id))
     return redirect("/profile")
 
 
@@ -316,13 +320,20 @@ def user_page(usr_id):
             WHERE results.user_id =:u AND movements.lift LIKE :s
             """), {"u": usr_id, "s": selected})
         results = result.fetchall()
-        if len(results) == 0:
-            return redirect("/users")
 
+        result_usr = db.session.execute(text(
+            """
+            SELECT users.username, users.id
+            FROM users
+            WHERE users.id = :uid
+            """), {"uid":usr_id})
+        lookup_usr = result_usr.fetchone()
+        
+        profile = (str(usr_id) == str(user["id"]))
 
-        profile = (results[0].user_id == int(user["id"]))
-
-        return render_template("user.html", results=results, user=user, orders=orders.values(), profile=profile)
+        return render_template("user.html", results=results, user=user,
+                               orders=orders.values(), profile=profile,
+                               viewed=lookup_usr)
 
     result = db.session.execute(text(
         """
@@ -334,7 +345,9 @@ def user_page(usr_id):
         WHERE results.user_id =:u AND movements.lift LIKE :s
         """), {"u": user["id"], "s": selected})
     results = result.fetchall()
-    return render_template("user.html", results=results, user=user, orders=orders.values(), profile=True)
+    return render_template("user.html", results=results, user=user,
+                           orders=orders.values(),
+                           profile=True, viewed=user)
     
 
 @app.route("/sendcomp", methods=["POST"])

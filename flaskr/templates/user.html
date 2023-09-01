@@ -1,13 +1,13 @@
-<!doctype html>
-<Title>WLD</Title>
+{% extends "layout.html" %}
+{% block content %}
 {% if profile %}
 <h1>Your results {{user.username}}</h1> 
 {% else %}
-<h1>Results of {{user.username}}</h1>
+<h1>Results of {{viewed.username}}</h1>
 {% endif %}
 <h2>Filter</h2>
 
-<form action="/setselected" method="POST">
+<form action="/setselected/{{viewed.id}}" method="POST">
 
 	<input onclick="this.form.submit()"
 		type="radio" name="lift" value="Squat"> Squat
@@ -23,7 +23,7 @@
 		type="radio" name="lift" value="%"> Clear filter
 </form>
 
-<form action="/setorder" method="POST">
+<form action="/setorder/{{viewed.id}}" method="POST">
 	| Sort by:
 	<select name="order" id="order">
 		{% for order in orders %}
@@ -50,8 +50,4 @@ date: {{result.date}}
 </form>
 <hr>
 {% endfor %}
-
-<br>
-<button onclick="window.location.href='/logout';">Log out</button>
-<br>
-<button onclick="window.location.href='/';">Home</button>
+{% endblock content %}
