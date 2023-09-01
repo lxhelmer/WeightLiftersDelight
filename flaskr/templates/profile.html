@@ -1,6 +1,6 @@
-<!doctype html>
-<Title>WLD</Title>
-<h1>Your results {{session.username}}</h1>
+{% extends "layout.html" %}
+{% block header %} Your results {{session.username}}{% endblock header %}
+
 <form action="/setselected" method="POST">
 
 	<input onclick="this.form.submit()"
@@ -46,8 +46,5 @@ date: {{result.date}}
 </form>
 <hr>
 {% endfor %}
-
 <br>
-<button onclick="window.location.href='/logout';">Log out</button>
-<br>
-<button onclick="window.location.href='/';">Home</button>
+{% block content %}

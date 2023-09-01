@@ -285,8 +285,6 @@ def users():
 def user_page(usr_id):
     if not_login():
         return redirect("/landing")
-    if not is_admin():
-        abort(403)
     
     selected = "%"
     order = "dnf"
@@ -305,6 +303,23 @@ def user_page(usr_id):
     }
 
     order = orders[order][2]
+    user = session["user"]
+
+    if is_admin():
+        result = db.session.execute(text(
+            """
+            SELECT results.id,results.weight,results.date,
+            movements.lift, results.user_id, users.username
+            FROM results
+            LEFT JOIN movements ON results.movement_id = movements.id
+            LEFT JOIN users ON results.user_id = users.id
+            WHERE results.user_id =:u AND movements.lift LIKE :s
+            """), {"u": usr_id, "s": selected})
+        results = result.fetchall()
+
+        profile = (usr_id == user["id"])
+
+        return render_template("user.html", results=results, user=user, orders=orders.values(), profile=profile)
 
     result = db.session.execute(text(
         """
@@ -314,13 +329,10 @@ def user_page(usr_id):
         LEFT JOIN movements ON results.movement_id = movements.id
         LEFT JOIN users ON results.user_id = users.id
         WHERE results.user_id =:u AND movements.lift LIKE :s
-        """), {"u": usr_id, "s": selected})
+        """), {"u": user["id"], "s": selected})
     results = result.fetchall()
-
-    user = session["user"]
-
-    return render_template("user.html", results=results, user=user, orders=orders.values())
-
+    return render_template("user.html", results=results, user=user, orders=orders.values(), profile=True)
+    
 
 @app.route("/sendcomp", methods=["POST"])
 def send_comp():

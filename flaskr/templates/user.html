@@ -1,6 +1,10 @@
 <!doctype html>
 <Title>WLD</Title>
-<h1>Results of  {{user.username}}</h1> 
+{% if profile %}
+<h1>Your results {{user.username}}</h1> 
+{% else %}
+<h1>Results of {{user.username}}</h1>
+{% endif %}
 <h2>Filter</h2>
 
 <form action="/setselected" method="POST">
