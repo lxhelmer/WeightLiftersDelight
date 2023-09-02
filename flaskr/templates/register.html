@@ -1,34 +1,38 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 <Title>WLD</Title>
-<h1>Register as in create new user</h1>
-<br>
-<h3 style="color:red;">{{ error }}</h1>
-<form action="/newu" method="POST">
-	<p> Username: <br>
-		<input type="text" name="nusername">
-	</p>
-	<p> Password: <br>
-		<input type="password" name="password">
-	</p>		
-	<input type="checkbox" name="admin"> Create as admin account
-	<input type = "hidden" id = "adminhidden" name = "admin" value = "0"/>
-	<br>
-	Sport :
-	<input type="checkbox" name="weightlifting" value="WL"> Weightlifting
-	<input type = "hidden" id = "wlhidden" name = "weightlifting" value = "0"/>
+<div style="padding-top:10px; padding-left:10px;">
+	<button onclick="window.location.href='/';" class="btn btn-primary" >Home</button>
+</div>
+<hr>
+<div style="padding:10px;">
+	<h1>Create new user</h1>
+	<h3 style="color:red;">{{ error }}</h1>
+	<form action="/newu" method="POST">
+		<p> Username: <br>
+			<input type="text" name="nusername">
+		</p>
+		<p> Password: <br>
+			<input type="password" name="password">
+		</p>		
+		<input type="checkbox" name="admin"> Create as admin account
+		<input type = "hidden" id = "adminhidden" name = "admin" value = "0"/>
+		<br>
+		Sport :
+		<input type="checkbox" name="weightlifting" value="WL"> Weightlifting
+		<input type = "hidden" id = "wlhidden" name = "weightlifting" value = "0"/>
 
-	<input type="checkbox" name="powerlifting" value="PL"> Powerlifting
-	<input type = "hidden" id = "plhidden" name = "powerlifting" value = "0"/>
+		<input type="checkbox" name="powerlifting" value="PL"> Powerlifting
+		<input type = "hidden" id = "plhidden" name = "powerlifting" value = "0"/>
 
-	<br>
-	Competition division:
-	<input type="radio" name="division" value="M" checked> M
-	<input type="radio" name="division" value="W"> W
-		
-	<br>
-	Competition weight:
-	<input type="number" name="weight">
-	<br>
-	<input type="submit" value="Create">
-</form>
-<br>
-<button onclick="window.location.href='/';">Home</button>
+		<br>
+		Competition division:
+		<input type="radio" name="division" value="M" checked> M
+		<input type="radio" name="division" value="W"> W
+			
+		<br>
+		Competition weight:
+		<input type="number" name="weight">
+		<br>
+		<input  class="btn btn-primary" type="submit" value="Create">
+	</form>
+</div>

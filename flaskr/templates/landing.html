@@ -1,10 +1,13 @@
-<form action="/login" method="POST">
-	<p> Username: <br>
-		<input type="text" name="username">
-	</p>
-	<p> Password: <br>
-		<input type="password" name="password">
-	</p>		
-	<input type="submit" value="Log in">
-</form>
-<button onclick="window.location.href='/register';">Register</button>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<div style="padding: 10px;">
+	<form action="/login" method="POST">
+		<p> Username: <br>
+			<input type="text" name="username">
+		</p>
+		<p> Password: <br>
+			<input type="password" name="password">
+		</p>		
+		<input type="submit" value="Log in" class="btn btn-primary">
+	</form>
+	<button onclick="window.location.href='/register';" class="btn btn-primary">Register</button>
+</div>

@@ -79,7 +79,7 @@ def setSelected(u_id):
 def setOrder(u_id):
     session["order"] = request.form["order"]
     if is_admin():
-        return redirect("/user/"+(u_id))
+        return redirect("/user/"+str(u_id))
     return redirect("/profile")
 
 
@@ -334,8 +334,8 @@ def user_page(usr_id):
             FROM results
             LEFT JOIN movements ON results.movement_id = movements.id
             LEFT JOIN users ON results.user_id = users.id
-            WHERE results.user_id =:u AND movements.lift LIKE :s
-            """), {"u": usr_id, "s": selected})
+            WHERE results.user_id =:u AND movements.lift LIKE :s ORDER BY
+            """+ order), {"u": usr_id, "s": selected})
         results = result.fetchall()
 
         result_usr = db.session.execute(text(
@@ -359,8 +359,8 @@ def user_page(usr_id):
         FROM results
         LEFT JOIN movements ON results.movement_id = movements.id
         LEFT JOIN users ON results.user_id = users.id
-        WHERE results.user_id =:u AND movements.lift LIKE :s
-        """), {"u": user["id"], "s": selected})
+        WHERE results.user_id =:u AND movements.lift LIKE :s ORDER BY
+        """+ order), {"u": user["id"], "s": selected})
     results = result.fetchall()
     return render_template("user.html", results=results, user=user,
                            orders=orders.values(),
@@ -375,6 +375,8 @@ def send_comp():
         abort(403)
     sport = request.form["sport"]
     name = request.form["name"]
+    if name is "":
+        return redirect("/")
 
     comp_query = text("""
                       INSERT INTO competitions (name, sport) VALUES (:n, :s)

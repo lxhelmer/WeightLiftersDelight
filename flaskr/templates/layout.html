@@ -1,17 +1,17 @@
 <!doctype html>
 <Title>WLD</Title>
-
-<button onclick="window.location.href='/';">Home</button>
-<button onclick="window.location.href='/profile';">To profile</button>
-{% if admin %}
-<button onclick="window.location.href='/users';">To users</button>
-{% endif %}
-<button onclick="window.location.href='/logout';">Log out</button>
+<div style="padding-top: 10px;padding-left: 10px">
+	<button onclick="window.location.href='/';" class="btn btn-primary">Home</button>
+	<button onclick="window.location.href='/profile';" class="btn btn-primary">To profile</button>
+	{% if admin %}
+	<button onclick="window.location.href='/users';" class="btn btn-primary">To users</button>
+	{% endif %}
+	 <button onclick="window.location.href='/logout';" class="btn btn-primary">Log out</button>
+ </div>
 <hr>
-
-<h1> {% block header %} {% endblock %} </h1>
-
-{% block content %}
-{% endblock content %}
-
+<div style="padding-left: 10px;">
+	<h1> {% block header %} {% endblock %} </h1>
+	{% block content %}
+	{% endblock content %}
+</div>
 

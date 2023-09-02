@@ -1,9 +1,10 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 {% extends "layout.html" %}
 {% block content %}
 <h1> Users: </h1>
+<hr>
 
 {% for user in users %}
-<hr>
 Name: {{user.username}}
 <br>
 
@@ -18,10 +19,10 @@ PL {{user.pl_div}}{{user.pl_max}}
 {% endif %}
 <br>
 <form action="/user/{{user.id}}" method="POST">
-	<input type="submit" value="Open">
+	<input type="submit" value="Open" class="btn btn-primary">
 </form>
 <form action="/removeu/{{user.id}}" method="POST">
-	<input type="submit" value="Remove">
+	<input type="submit" value="Remove" class="btn btn-primary">
 </form>
 <hr>
 {% endfor %}

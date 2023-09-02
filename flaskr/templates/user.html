@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 {% extends "layout.html" %}
 {% block content %}
 {% if profile %}
@@ -8,10 +9,9 @@
 <h2>Filter</h2>
 
 <form action="/setselected/{{viewed.id}}" method="POST">
-
 	<input onclick="this.form.submit()"
 		type="radio" name="lift" value="Squat"> Squat
-	<input onclick="this.form.submit()"
+	<input onclick="this.form.submit()" 
 		type="radio" name="lift" value="Bench"> Bench
 	<input onclick="this.form.submit()"
 		type="radio" name="lift" value="Deadlift"> Deadlift
@@ -24,8 +24,9 @@
 </form>
 
 <form action="/setorder/{{viewed.id}}" method="POST">
-	| Sort by:
-	<select name="order" id="order">
+	Sort by:
+	<select name="order" id="order" class="btn btn-primary dropdown-toggle">
+		<option label="Order"></option>
 		{% for order in orders %}
 		<option	onclick="this.form.submit()"
 			value={{ order[1] }}>
@@ -43,10 +44,10 @@ weight: {{ result.weight }}
 
 date: {{result.date}}
 <form action="/result/{{result.id}}" method="POST">
-	<input type="submit" value="Open">
+	<input type="submit" value="Open" class="btn btn-primary">
 </form>
 <form action="/remove/{{result.id}}" method="POST">
-	<input type="submit" value="Remove">
+	<input type="submit" value="Remove" class="btn btn-primary">
 </form>
 <hr>
 {% endfor %}

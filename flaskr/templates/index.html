@@ -1,66 +1,74 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 {% extends "layout.html" %}
 {% block header %} Welcome to weightlifters delight {% endblock header %}
 {% block content %}
-<p>What do you wanna log?</p>
+<div class="row" style="padding-top: 20px;">
+	<div class="col-sm">
+		<p>What do you wanna log?</p>
 
-<h3 style="color:red;">{{ error }}</h1>
-<h3 style="color:green;">{{ notif }}</h1>
+		<h3 style="color:red;">{{ error }}</h1>
+		<h3 style="color:green;">{{ notif }}</h1>
 
-<form action="/sendres" method="POST">
-	<select name="lift" id="lift">
-		{% for entry in entrys%}
-		<option> {{ entry.lift }} </option>
-		{% endfor %}
-	</select>
-	weight:
-	<input type="number" name="weight"> range 0-999
-	<br>
-	Select competition:
-	<select name="comp" id="comp">
-		<option label=" "></option>
-		{% for comp in comps%}
-		<option value={{comp.id}}> {{ comp.name }}</option>
-		{% endfor %}
-	</select>
-	<br>
-	<input type="checkbox" name="public">
-	<input type = "hidden" id = "Checkhidden" name = "public" value = "0"/>
-	<label for="public">public</label>
-	<br>
-	<input type="submit" value="add to log">
-</form>
+		<form action="/sendres" method="POST">
+			<select name="lift" id="lift" class="btn btn-primary dropdown-toggle">
+				{% for entry in entrys%}
+				<option> {{ entry.lift }} </option>
+				{% endfor %}
+			</select>
+			weight:
+			<input type="number" name="weight"> range 0-999 </input>
+			<br>
+			Select competition:
+			<select name="comp" id="comp" class="btn btn-primary dropdown-toggle">
+				<option label=" "></option>
+				{% for comp in comps%}
+				<option value={{comp.id}}> {{ comp.name }}</option>
+				{% endfor %}
+			</select>
+			<br>
+			<input type="checkbox" name="public">
+			<input type = "hidden" id = "Checkhidden" name = "public" value = "0"/>
+			<label for="public">public</label>
+			<br>
+			<input type="submit" value="add to log" class="btn btn-primary">
+		</form>
+		<hr>
+		{% if admin %}
+		<h3>Add competition:</h3>
+		<form action="/sendcomp" method="POST">
+			Competition name:
+			<input type="text" name="name">
+			<br>
+			<select name="sport" id="sport" class="btn btn-primary dropdown-toggle">
+				{% for sport in sports %}
+				<option> {{ sport }}
+				{% endfor %}
+			</select>
+			<br>
+			<div style="padding-top: 10px;">
+			<input type="submit" value="add to log" class="btn btn-primary">
+			</div>
+		</form>
+		<hr>
+		{% endif %}
+	</div>
+	<div class="col-sm">
+		<h3>Public results:</h3>
+		<div style="padding-left: 40px;">
+			{% for result in publics %}
+			lift: {{result.lift}}
+			<br>
+			weight: {{ result.weight }}
+			<br>
+			lifter: {{ result.username }}
 
-<hr>
-<h3>Public results:</h3>
-{% for result in publics %}
-lift: {{result.lift}}
-<br>
-weight: {{ result.weight }}
-<br>
-lifter: {{ result.username }}
-
-date: {{result.date}}
-<form action="/result/{{result.id}}" method="POST">
-	<input type="submit" value="Open">
-</form>
-<hr>
-{% endfor %}
-
-{% if admin %}
-<h3>Add competition:</h3>
-<form action="/sendcomp" method="POST">
-	Competition name:
-	<input type="text" name="name">
-	<br>
-	<select name="sport" id="sport">
-		{% for sport in sports %}
-		<option> {{ sport }}
-		{% endfor %}
-	</select>
-
-	
-	<br>
-	<input type="submit" value="add to log">
-</form>
-{% endif %}
+			date: {{result.date}}
+			<form action="/result/{{result.id}}" method="POST">
+				<input type="submit" value="Open" class="btn btn-primary">
+			</form>
+			<hr>
+			{% endfor %}
+		</div>
+	</div>
+</div>
 {% endblock content %}
