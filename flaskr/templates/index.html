@@ -57,8 +57,9 @@
 	<div class="col-sm">
 		<h3>Public results:</h3>
 		<div style="padding-left: 40px;">
-			lifter: {{result.username}}
 			{% for result in publics %}
+			lifter: {{result.username}}
+			<br>
 			lift: {{result.lift}}
 			<br>
 			weight: {{ result.weight }}
