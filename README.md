@@ -22,6 +22,8 @@ Päänäkymät ovat: Julkiset tulokset, profiilikohtaiset tulokset, tuloksen lis
 
 ## Ohjelman käyttö
 
+Kopioi ohjelmakirjasto ja siirry luodun kirjaston juureen (/dbcourseprogram)
+
 Luo virtuaaliympäristö komennolla 
 ```bash 
 python3 -m venv venv
