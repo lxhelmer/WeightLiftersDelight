@@ -60,5 +60,23 @@ def get_results(selected,order, user_id):
         """+ order), {"u": user_id, "s": selected})
     results = result.fetchall()
     return results
+
+def get_result(id):
+    query = text("""
+                 SELECT results.id, users.username, results.public, results.weight,
+                 movements.lift, results.date,
+                 results.like_amount
+                 FROM results
+                 LEFT JOIN movements
+                 ON results.movement_id= movements.id
+                 LEFT JOIN users
+                 ON results.user_id = users.id
+                 WHERE results.id = :id
+                 """)
+    result = db.session.execute(query, {"id": res_id})
+    lift_info = result.fetchone()
+    return lift_info
+
+
     
 

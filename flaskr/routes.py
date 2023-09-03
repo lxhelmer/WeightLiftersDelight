@@ -238,19 +238,7 @@ def result_page(res_id):
 
     user = session["user"]["username"]
 
-    query = text("""
-                 SELECT results.id, users.username, results.public, results.weight,
-                 movements.lift, results.date,
-                 results.like_amount
-                 FROM results
-                 LEFT JOIN movements
-                 ON results.movement_id= movements.id
-                 LEFT JOIN users
-                 ON results.user_id = users.id
-                 WHERE results.id = :id
-                 """)
-    result = db.session.execute(query, {"id": res_id})
-    lift_info = result.fetchone()
+    lift_info = result_service.get_result(res_id)
 
     if lift_info.username == user or lift_info.public:
         query = text("""
