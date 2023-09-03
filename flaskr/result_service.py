@@ -39,7 +39,7 @@ def get_public():
     res_query = text(
         """
             SELECT results.id,results.weight,results.date,
-            movements.lift, users.username, users.admin
+            movements.lift, users.username
             FROM results
             LEFT JOIN movements
             ON results.movement_id = movements.id
