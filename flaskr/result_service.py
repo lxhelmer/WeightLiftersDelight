@@ -139,7 +139,7 @@ def delete_result(result_id):
                   ON results.user_id = users.id
                   WHERE results.id =:id AND users.username=:user)
             """)
-    db.session.execute(query, {"id": id, "user": user})
+    db.session.execute(query, {"id": result_id, "user": user})
     db.session.commit()
     return "/profile"
 
