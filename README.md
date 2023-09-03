@@ -110,5 +110,7 @@ Ominaisuude lopullisessa ohjelmassa:
     - Admin voi etusivulla lisätä kilpailun.
     - Lisätty kilpailu näkyy kaikille ja sen voi merkata uuden tuloksen lisäämisen yhteydessä.
     - Jos tulokseen merkkaa kilpailun näkyy tämä tuloksen omalla sivulla.
+ 
+  
 Tämän lisäksi käyttäjää luodessa sekä uutta tulosta lisätessä virheellinen syöte saa aikaan virhekoodin ja tuloksen lisäyksen yhteydessä näytetään viesti onnistumisen merkiksi.
 Sovelluksen ulkonäkö on muotoiltu bootstrap kirjastolla.
