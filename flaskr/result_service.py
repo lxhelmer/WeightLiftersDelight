@@ -1,6 +1,9 @@
 from sqlalchemy.sql import text
+from flask import session
 from datetime import datetime
 from .db import db
+from .orders import orders
+from .privileges import not_login, is_admin
 
 def add_result(user, lift, weight, public, comp):
 
@@ -47,8 +50,26 @@ def get_public():
 
     return publics
 
-def get_results(selected,order, user_id):
-    
+def get_results(user_id):
+    selected = "%"
+    order = "dnf"
+
+    if session.get("selected"):
+        selected = session["selected"]
+
+    if session.get("order"):
+        order = session["order"]
+
+
+
+    order = orders[order][2]
+    user = session["user"]
+
+    #If the current user is not admin
+    #it always gets its own results.
+    if not is_admin():
+        user_id = session["user"]["id"]
+
     result = db.session.execute(text(
         """
         SELECT results.id,results.weight,results.date,
@@ -60,6 +81,7 @@ def get_results(selected,order, user_id):
         """+ order), {"u": user_id, "s": selected})
     results = result.fetchall()
     return results
+
 
 def get_result(id):
     query = text("""
@@ -85,3 +107,36 @@ def like_result(id):
                       """)
     db.session.execute(like_query,{"id":id})
     db.session.commit()
+
+def delete_result(id):
+    if is_admin():
+            query = text(
+                """
+                         DELETE FROM results
+                         WHERE results.id IN
+                         (SELECT results.id
+                          FROM results LEFT JOIN users
+                          ON results.user_id = users.id
+                          WHERE results.id =:id)
+                         RETURNING results.user_id
+                    """)
+            result = db.session.execute(query, {"id": id, })
+            user_id = result.fetchone().user_id
+            db.session.commit()
+            return "/user/" + str(user_id)
+
+    user = session["user"]["username"]
+    query = text(
+        """
+                 DELETE FROM results
+                 WHERE results.id IN
+                 (SELECT results.id
+                  FROM results LEFT JOIN users
+                  ON results.user_id = users.id
+                  WHERE results.id =:id AND users.username=:user)
+            """)
+    db.session.execute(query, {"id": id, "user": user})
+    db.session.commit()
+    return "/profile"
+    
+    
