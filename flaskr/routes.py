@@ -131,8 +131,6 @@ def user_page(usr_id):
 # Add new user
 @app.route("/newu", methods=["POST"])
 def new_user():
-    if session["csrf_token"] != request.form["csrf_token"]:
-        abort(403)
 
     username = request.form["nusername"]
     pswd_tx = request.form["password"]
