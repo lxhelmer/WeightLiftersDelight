@@ -4,7 +4,7 @@ from sqlalchemy import exc
 from werkzeug.security import check_password_hash, generate_password_hash
 from .app import app
 from .db import db
-from . import results
+from . import result_service
 from .privileges import not_login, is_admin
 
 
@@ -12,9 +12,6 @@ from .privileges import not_login, is_admin
 @app.route("/", methods=["GET", "POST"])
 @app.route("/<message>")
 def index(message=""):
-    # This is not the most elegant way of
-    # doing the check and redirect but it works now.
-    # Might change to flask_login later.
     if not_login():
         return redirect("/landing")
     admin = is_admin()
@@ -39,25 +36,13 @@ def index(message=""):
         """))
     entrys = lifts.fetchall()
 
-    res_query = text(
-        """
-        SELECT results.id,results.weight,results.date,
-        movements.lift, users.username, users.admin
-        FROM results
-        LEFT JOIN movements
-        ON results.movement_id = movements.id
-        LEFT JOIN users
-        ON results.user_id = users.id
-        WHERE results.public ORDER BY results.date DESC
-        """)
-    public_results = db.session.execute(res_query)
-    publics = public_results.fetchall()
-
     comp_query = text("""
                       SELECT name, id, sport FROM competitions
                       """)
     comp_result = db.session.execute(comp_query)
     competitions = comp_result.fetchall()
+
+    publics = result_service.get_public()
 
     return render_template(
         "index.html", entrys=entrys, notif=notif, error=error,
@@ -103,7 +88,7 @@ def send_result():
     except ValueError:
         return redirect("/fail")
 
-    results.add_result(user,lift, weight, public, comp)
+    result_service.add_result(user,lift, weight, public, comp)
 
     return redirect("/ok")
 
@@ -331,16 +316,8 @@ def user_page(usr_id):
     user = session["user"]
 
     if is_admin():
-        result = db.session.execute(text(
-            """
-            SELECT results.id,results.weight,results.date,
-            movements.lift, results.user_id, users.username
-            FROM results
-            LEFT JOIN movements ON results.movement_id = movements.id
-            LEFT JOIN users ON results.user_id = users.id
-            WHERE results.user_id =:u AND movements.lift LIKE :s ORDER BY
-            """+ order), {"u": usr_id, "s": selected})
-        results = result.fetchall()
+        results = result_service.get_results(selected=selected,
+                                      order=order, user_id=usr_id)
 
         result_usr = db.session.execute(text(
             """
