@@ -239,6 +239,9 @@ def result_page(res_id):
     user = session["user"]["username"]
 
     lift_info = result_service.get_result(res_id)
+    
+    if lift_info == None:
+        return redirect("/")
 
     if lift_info.username == user or lift_info.public:
         query = text("""
@@ -357,13 +360,7 @@ def send_comp():
 
 @app.route("/like/<res_id>", methods=["POST"])
 def like(res_id):
-    like_query = text("""
-                      UPDATE results
-                      SET like_amount = like_amount + 1
-                      WHERE id = :id
-                      """)
-    db.session.execute(like_query,{"id":res_id})
-    db.session.commit()
+    result_service.like_result(res_id)
     return redirect("/result/" + res_id)
 
 

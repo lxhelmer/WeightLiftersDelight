@@ -73,10 +73,15 @@ def get_result(id):
                  ON results.user_id = users.id
                  WHERE results.id = :id
                  """)
-    result = db.session.execute(query, {"id": res_id})
+    result = db.session.execute(query, {"id": id})
     lift_info = result.fetchone()
     return lift_info
 
-
-    
-
+def like_result(id):
+    like_query = text("""
+                      UPDATE results
+                      SET like_amount = like_amount + 1
+                      WHERE id = :id
+                      """)
+    db.session.execute(like_query,{"id":id})
+    db.session.commit()
