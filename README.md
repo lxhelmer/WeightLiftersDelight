@@ -86,3 +86,29 @@ jakaa massiiviseksi paisunut routes.py omiin toiminnallisuuskohtaisiin tiedostoi
 
 
 Onko projektin laajuus hyvään arviointiin nähden riittävä vai tarvitseeko vielä keksiä esim. Monipuolisempaa tietokannan käyttöä.
+
+## Ohjelman tila loppupalautuksessa 3.9.
+
+Ohjelmasta on korjattu bugit ja se on testattu paikallisesti puhtaassa virtuaaliympäristössä.
+Ominaisuude lopullisessa ohjelmassa:
+
+-  Käyttäjä voi luoda uuden käyttäjän. Käyttäjälle valitaan kilpailupaino, divisioona sekä nimi ja salasana. Kilpailuluokat määräytyvät painoluokkien mukaan ja tallentuu automaattisesti.
+-  Käyttäjä voi luoda normaalin tai admin tason käyttäjän.
+-  Normaali käyttäjä:
+    -  Lisätä uuden tuloksen. Tulokselle valitaan liike ja nostettu paino. Nosto ajankohta määräytyy lisäyshetken mukaan. Uusi tulos voidaan tallentaa julkisena jolloin se näkyy myös muille tai yksityisenä.
+    -  Käyttäjä voi katselle julkiseksi merkattuja tuloksia.
+    -  Käyttäjä voi avata tuloksen tulos sivun jolla näkyy lisätietoja kuten tykkäykset ja kommentit
+    -  Tulos sivulla käyttäjä voi myös kommentoida ja tykätä tuloksesta.
+    -  Käyttäjä voi omalla profiilisivullaan katsella tuloksiaan. Tuloksia voi filtteröidä noston liikeen mukaan sekä järjestää eri tavoin.
+    -  Käyttäjä voi omalla profiilisivullaan myös poistaa tuloksen.
+- Admin:
+    - Admin voi normaalin käyttäjän toimintojen lisäksi selata muiden käyttäjien profiileita /users sivulla.
+    - Admin voi myös poistaa käyttäjiä users sivulla. Admin voi poistaa myös oman profiilinsa kyseisellä sivulla.
+    - Admin voi avata käyttäjäkohtaisen profiilinäkymän. Tällöin Admin voi tarkastella muiden käyttäjien tuloksia. Tämä sivu on sama kuin normaalin käyttäjän profiilisivu.
+    - Jos admin avaa oman profiilinsa näkyy se hänelle normaalisti omana profiilina.
+    - Admin voi avata myös yksityisiä tulos sivuja normaalisti julkisten tulosten tapaan.
+    - Admin voi etusivulla lisätä kilpailun.
+    - Lisätty kilpailu näkyy kaikille ja sen voi merkata uuden tuloksen lisäämisen yhteydessä.
+    - Jos tulokseen merkkaa kilpailun näkyy tämä tuloksen omalla sivulla.
+Tämän lisäksi käyttäjää luodessa sekä uutta tulosta lisätessä virheellinen syöte saa aikaan virhekoodin ja tuloksen lisäyksen yhteydessä näytetään viesti onnistumisen merkiksi.
+Sovelluksen ulkonäkö on muotoiltu bootstrap kirjastolla.
