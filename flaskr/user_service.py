@@ -57,7 +57,7 @@ def login(username, password):
 def logout():
     del session["user"]
     del session["admin"]
-    def session["csrf_token"]
+    del session["csrf_token"]
 
 
 def register(username, password, admin, wl_class, pl_class):
