@@ -66,7 +66,7 @@ def register(error=""):
     return render_template("register.html", error=error)
 
 #Profile-page for normal users, wraps /user/id implementation.
-@app.route("/profile", methods=["GET", "POST"])
+@app.route("/profile", methods=["GET"])
 def profile():
     if not_login():
         return redirect("/landing")
@@ -74,7 +74,7 @@ def profile():
 
 
 #Per result page.
-@app.route("/result/<int:res_id>", methods=["POST", "GET"])
+@app.route("/result/<int:res_id>", methods= ["GET"])
 def result_page(res_id):
     if not_login():
         return redirect("/landing")
@@ -221,7 +221,7 @@ def send_result():
     return redirect("/ok") 
 
 #Remove result
-@app.route("/remove/<res_id>", methods=["POST"])
+@app.route("/remove/<res_id>", methods=["GET"])
 def remove(res_id):
     if not_login():
         return redirect("/landing")
@@ -229,7 +229,7 @@ def remove(res_id):
     return redirect(route)
 
 #Like a result
-@app.route("/like/<res_id>", methods=["POST"])
+@app.route("/like/<res_id>", methods=["GET"])
 def like(res_id):
     result_service.like_result(res_id)
     return redirect("/result/" + res_id)
