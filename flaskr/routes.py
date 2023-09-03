@@ -214,7 +214,7 @@ def send_result():
 
     try:
         weight = float(weight)
-        if weight > 1000:
+        if weight >= 1000:
             return redirect("/fail")
     except ValueError:
         return redirect("/fail")
