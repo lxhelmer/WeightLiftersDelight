@@ -211,7 +211,7 @@ def send_result():
     weight = request.form["weight"]
     public = request.form["public"]
     comp = request.form["comp"]
-
+    
     try:
         weight = float(weight)
     except ValueError:
@@ -263,10 +263,6 @@ def send_comp():
     if name == "":
         return redirect("/cfail")
 
-    comp_query = text("""
-                      INSERT INTO competitions (name, sport) VALUES (:n, :s)
-                      """)
-    db.session.execute(comp_query, {"n": name, "s": sport})
-    db.session.commit()
+    sport_service.add_competition(name,sport)
     return redirect("/cadd")
 
