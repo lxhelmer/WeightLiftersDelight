@@ -127,7 +127,7 @@ def delete_result(id):
 
     user = session["user"]["username"]
     query = text(
-        """
+            """
                  DELETE FROM results
                  WHERE results.id IN
                  (SELECT results.id
@@ -138,7 +138,16 @@ def delete_result(id):
     db.session.execute(query, {"id": id, "user": user})
     db.session.commit()
     return "/profile"
-   
+
+def add_comment(id, comment):
+    query = text(
+            """
+            INSERT INTO comments
+            (comment, result_id) values (:c, :id)
+            """)
+    db.session.execute(query, {"c":comment,"id":id})
+    db.session.commit()
+
 def get_comments(id):
     query = text("""
              SELECT comment
@@ -149,4 +158,3 @@ def get_comments(id):
     comments = result.fetchall()
     return comments
 
-    

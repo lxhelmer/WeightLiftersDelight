@@ -1,24 +1,29 @@
-<!doctype html>
-
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 {% extends "layout.html" %}
 {% block header %} Lift record {% endblock header %}
 {% block content %}
+<div style="padding-left: 10px;">
+	<h1></h1>
+	weight: {{info.weight}}
+	<br>
+	likes: {{info.like_amount}}
+	<form action="/like/{{info.id}}" method="GET">
+		<input type="submit" value="LIKE" class="btn btn-primary">
+	</form>
+	<hr>
+	<h3>comments:</h3>
 
-<h1></h1>
-{{info.weight}}
-{{info.id}}
-<br>
-{{info.like_amount}}
+	{% for comment in comments %}
+	<br>
+	- {{comment[0]}}
+	{% endfor %}
+	<hr>
+	
+	<form action="/comment/{{info.id}}" method="POST">
+		<input type="text" name="comment"></input>
+		<input type="submit" value="Add comment" class="btn btn-primary">
+	</form>
 
-<form action="/like/{{info.id}}" method="GET">
-	<input type="submit" value="LIKE">
-</form>
 
-<form action="/" method="GET">
-	<input type="submit" value="Home">
-</form>
-<form action="/profile" method="GET">
-	<input type="submit" value="Profile">
-</form>
-
+</div>
 {% endblock content %}

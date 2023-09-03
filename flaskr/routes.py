@@ -231,14 +231,25 @@ def remove(res_id):
 #Like a result
 @app.route("/like/<res_id>", methods=["GET"])
 def like(res_id):
+    if not_login():
+        return redirect("/landing")
     result_service.like_result(res_id)
     return redirect("/result/" + res_id)
+
+@app.route("/comment/<res_id>", methods=["POST"])
+def comment(res_id):
+    if not_login():
+        return redirect("/landing")
+    comment = request.form["comment"]
+    result_service.add_comment(res_id,comment)
+    return redirect("/result/" + str(res_id))
 
 #Set result filter
 @app.route("/setselected/<u_id>", methods=["POST"])
 def setSelected(u_id):
+    if not_login():
+        return redirect("/landing")
     session["selected"] = request.form["lift"]
-    print(request.form["lift"])
     if is_admin():
         return redirect("/user/"+str(u_id))
     return redirect("/profile")
@@ -246,6 +257,8 @@ def setSelected(u_id):
 #Set result order
 @app.route("/setorder/<u_id>", methods=["POST"])
 def setOrder(u_id):
+    if not_login():
+        return redirect("/landing")
     session["order"] = request.form["order"]
     if is_admin():
         return redirect("/user/"+str(u_id))
