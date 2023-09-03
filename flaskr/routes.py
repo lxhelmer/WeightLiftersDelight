@@ -83,7 +83,7 @@ def result_page(res_id):
     if lift_info is None:
         return redirect("/")
 
-    if lift_info.username == username or lift_info.public:
+    if lift_info.username == username or lift_info.public or is_admin():
         return render_template(
             "result.html",
             info=lift_info,
