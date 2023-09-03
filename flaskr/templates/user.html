@@ -3,9 +3,20 @@
 {% block content %}
 {% if profile %}
 <h1>Your results {{user.username}}</h1> 
+
 {% else %}
 <h1>Results of {{viewed.username}}</h1>
 {% endif %}
+CLASSES:
+<br>
+{% if viewed.wl_div %}
+WL {{viewed.wl_div}}{{viewed.wl_max}}
+{% endif %}
+<br>
+{% if viewed.pl_div %}
+PL {{viewed.pl_div}}{{viewed.pl_max}}
+{% endif %}
+<br>
 <h2>Filter</h2>
 
 <form action="/setselected/{{viewed.id}}" method="POST">

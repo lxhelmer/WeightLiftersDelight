@@ -1,9 +1,10 @@
+from datetime import datetime
 from sqlalchemy.sql import text
 from flask import session
-from datetime import datetime
 from .db import db
 from .orders import orders
-from .privileges import not_login, is_admin
+from .privileges import is_admin
+
 
 def add_result(user, lift, weight, public, comp):
 
@@ -33,9 +34,10 @@ def add_result(user, lift, weight, public, comp):
                         "cid": comp})
     db.session.commit()
 
+
 def get_public():
     res_query = text(
-            """
+        """
             SELECT results.id,results.weight,results.date,
             movements.lift, users.username, users.admin
             FROM results
@@ -50,6 +52,7 @@ def get_public():
 
     return publics
 
+
 def get_results(user_id):
     selected = "%"
     order = "dnf"
@@ -60,13 +63,10 @@ def get_results(user_id):
     if session.get("order"):
         order = session["order"]
 
-
-
     order = orders[order][2]
-    user = session["user"]
 
-    #If the current user is not admin
-    #it always gets its own results.
+    # If the current user is not admin
+    # it always gets its own results.
     if not is_admin():
         user_id = session["user"]["id"]
 
@@ -78,40 +78,44 @@ def get_results(user_id):
         LEFT JOIN movements ON results.movement_id = movements.id
         LEFT JOIN users ON results.user_id = users.id
         WHERE results.user_id =:u AND movements.lift LIKE :s ORDER BY
-        """+ order), {"u": user_id, "s": selected})
+        """ + order), {"u": user_id, "s": selected})
     results = result.fetchall()
     return results
 
 
-def get_result(id):
+def get_result(result_id):
     query = text("""
                  SELECT results.id, users.username, results.public, results.weight,
                  movements.lift, results.date,
-                 results.like_amount
+                 results.like_amount, competitions.name AS comp_name
                  FROM results
                  LEFT JOIN movements
-                 ON results.movement_id= movements.id
+                 ON results.movement_id = movements.id
                  LEFT JOIN users
                  ON results.user_id = users.id
+                 LEFT JOIN competitions
+                 ON results.comp_id = competitions.id
                  WHERE results.id = :id
                  """)
-    result = db.session.execute(query, {"id": id})
+    result = db.session.execute(query, {"id": result_id})
     lift_info = result.fetchone()
-    return (lift_info, get_comments(id))
+    return (lift_info, get_comments(result_id))
 
-def like_result(id):
+
+def like_result(result_id):
     like_query = text("""
                       UPDATE results
                       SET like_amount = like_amount + 1
                       WHERE id = :id
                       """)
-    db.session.execute(like_query,{"id":id})
+    db.session.execute(like_query, {"id": result_id})
     db.session.commit()
 
-def delete_result(id):
+
+def delete_result(result_id):
     if is_admin():
-            query = text(
-                """
+        query = text(
+            """
                          DELETE FROM results
                          WHERE results.id IN
                          (SELECT results.id
@@ -120,14 +124,14 @@ def delete_result(id):
                           WHERE results.id =:id)
                          RETURNING results.user_id
                     """)
-            result = db.session.execute(query, {"id": id, })
-            user_id = result.fetchone().user_id
-            db.session.commit()
-            return "/user/" + str(user_id)
+        result = db.session.execute(query, {"id": result_id, })
+        user_id = result.fetchone().user_id
+        db.session.commit()
+        return "/user/" + str(user_id)
 
     user = session["user"]["username"]
     query = text(
-            """
+        """
                  DELETE FROM results
                  WHERE results.id IN
                  (SELECT results.id
@@ -139,22 +143,23 @@ def delete_result(id):
     db.session.commit()
     return "/profile"
 
-def add_comment(id, comment):
+
+def add_comment(result_id, comment):
     query = text(
-            """
+        """
             INSERT INTO comments
             (comment, result_id) values (:c, :id)
             """)
-    db.session.execute(query, {"c":comment,"id":id})
+    db.session.execute(query, {"c": comment, "id": result_id})
     db.session.commit()
 
-def get_comments(id):
+
+def get_comments(result_id):
     query = text("""
              SELECT comment
              FROM comments
-             WHERE result_id =:lift_id
+             WHERE comments.result_id =:lift_id
              """)
-    result = db.session.execute(query, {"lift_id": id})
+    result = db.session.execute(query, {"lift_id": result_id})
     comments = result.fetchall()
     return comments
-

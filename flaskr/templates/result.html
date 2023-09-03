@@ -3,10 +3,19 @@
 {% block header %} Lift record {% endblock header %}
 {% block content %}
 <div style="padding-left: 10px;">
-	<h1></h1>
+	lift : {{info.lift}}
+	<br>
 	weight: {{info.weight}}
 	<br>
+	date: {{info.date}}
+	<br>
 	likes: {{info.like_amount}}
+	<br>
+	{% if info.comp_name %}
+	competition: {{info.comp_name}}
+	{% endif %}
+	<br>
+	
 	<form action="/like/{{info.id}}" method="GET">
 		<input type="submit" value="LIKE" class="btn btn-primary">
 	</form>

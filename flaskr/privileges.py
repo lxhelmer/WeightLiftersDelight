@@ -1,5 +1,6 @@
 from flask import session
 
+
 def not_login():
     return session.get("user") is None
 

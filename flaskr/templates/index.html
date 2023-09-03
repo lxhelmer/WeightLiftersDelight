@@ -46,6 +46,7 @@
 			</select>
 			<br>
 			<div style="padding-top: 10px;">
+			<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 			<input type="submit" value="add to log" class="btn btn-primary">
 			</div>
 		</form>
