@@ -97,7 +97,7 @@ def get_result(id):
                  """)
     result = db.session.execute(query, {"id": id})
     lift_info = result.fetchone()
-    return lift_info
+    return (lift_info, get_comments(id))
 
 def like_result(id):
     like_query = text("""
@@ -138,5 +138,15 @@ def delete_result(id):
     db.session.execute(query, {"id": id, "user": user})
     db.session.commit()
     return "/profile"
-    
+   
+def get_comments(id):
+    query = text("""
+             SELECT comment
+             FROM comments
+             WHERE result_id =:lift_id
+             """)
+    result = db.session.execute(query, {"lift_id": id})
+    comments = result.fetchall()
+    return comments
+
     

@@ -18,10 +18,10 @@ WL {{user.wl_div}}{{user.wl_max}}
 PL {{user.pl_div}}{{user.pl_max}}
 {% endif %}
 <br>
-<form action="/user/{{user.id}}" method="POST">
+<form action="/user/{{user.id}}" method="GET">
 	<input type="submit" value="Open" class="btn btn-primary">
 </form>
-<form action="/removeu/{{user.id}}" method="POST">
+<form action="/removeu/{{user.id}}" method="GET">
 	<input type="submit" value="Remove" class="btn btn-primary">
 </form>
 <hr>

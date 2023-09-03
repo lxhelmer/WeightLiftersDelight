@@ -16,7 +16,7 @@ def get_users():
                  """)
     result = db.session.execute(query)
     users_list = result.fetchall()
-    return user_list()
+    return users_list
 
 def get_user(id):
         result_user = db.session.execute(text(
@@ -65,3 +65,13 @@ def register(username, password, admin, wl_class, pl_class, div, weight):
 
     except:
         return False
+
+def delete(id):
+    query = text(
+        """
+        DELETE FROM users
+        WHERE users.id = :id
+        """)
+    result = db.session.execute(query, {"id": id})
+    db.session.commit()
+

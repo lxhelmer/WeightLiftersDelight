@@ -1,6 +1,5 @@
 from flask import render_template, request, redirect, session, abort
 from sqlalchemy.sql import text
-from sqlalchemy import exc
 from .app import app
 from .db import db
 from . import result_service
@@ -16,7 +15,7 @@ from .orders import orders
 #Competition management
 
 #Home page
-@app.route("/", methods=["GET", "POST"])
+@app.route("/", methods=["GET"])
 @app.route("/<message>")
 def index(message=""):
     if not_login():
@@ -42,7 +41,7 @@ def index(message=""):
     return render_template(
         "index.html", entrys=entrys, notif=notif, error=error,
         publics=publics, sports=["WL", "PL"],
-        admin=admin, comps=competitions)
+        admin=admin, comps=comps)
 
 
 #Visible site for non log-in usage.
@@ -55,11 +54,12 @@ def landing():
 @app.route("/register/<error>")
 def register(error=""):
     #This is to avoid the possibility of rendering user input in html
-
     if error == "name":
         error = "Select another name"
     elif error == "fields":
         error = "Please fill all fields"
+    elif error == "match":
+        error = "Passwords do not match"
     else:
         error = ""
 
@@ -79,22 +79,13 @@ def result_page(res_id):
     if not_login():
         return redirect("/landing")
 
-    user = session["user"]["username"]
+    username = session["user"]["username"]
 
-    lift_info = result_service.get_result(res_id)
-    
+    lift_info, comments = result_service.get_result(res_id)
     if lift_info == None:
         return redirect("/")
 
-    if lift_info.username == user or lift_info.public:
-        query = text("""
-                     SELECT comment
-                     FROM comments
-                     WHERE result_id =:lift_id
-                     """)
-        result = db.session.execute(query, {"lift_id": lift_info.id})
-        comments = result.fetchall()
-
+    if lift_info.username == username or lift_info.public:
         return render_template(
             "result.html",
             info=lift_info,
@@ -112,11 +103,10 @@ def users():
         abort(403)
 
     users_list = user_service.get_users()
-
     return render_template("users.html", users=users_list)
 
 #Per user view (wrapped by /profile).
-@app.route("/user/<int:usr_id>", methods=["POST", "GET"])
+@app.route("/user/<int:usr_id>", methods=["GET"])
 def user_page(usr_id):
     if not_login():
         return redirect("/landing")
@@ -146,6 +136,7 @@ def new_user():
 
     username = request.form["nusername"]
     pswd_tx = request.form["password"]
+    pswd_tx_snd = request.form["password_snd"]
     admin = request.form["admin"]
     wl = request.form["weightlifting"]
     pl = request.form["powerlifting"]
@@ -155,49 +146,37 @@ def new_user():
     wl_class = None
     pl_class = None
 
-    if weight is "" or username is "" or pswd_tx is "":
+    print(pswd_tx)
+    print(pswd_tx_snd)
+    print(pswd_tx == pswd_tx_snd)
+    if pswd_tx != pswd_tx_snd:
+        return redirect("/register/match")
+
+    if weight == "" or username == "" or pswd_tx == "":
         return redirect("/register/fields")
 
-    if wl is "0" and pl is "0":
+    #Checking against string 0 is not elegant but
+    #it makes it possible to always fetch the form value
+    if wl == "0" and pl == "0":
         return redirect("/register/fields")
 
-    if wl is not "0":
-        wl_query = text("""
-                           SELECT id
-                           FROM classes WHERE sport = 'WL' AND division =:d AND max_weight > :w
-                           ORDER by max_weight ASC
-                           """)
-        result = db.session.execute(wl_query, {"d": division, "w": weight})
-        wl_class = result.fetchone().id
+    if wl != "0":
+        wl_class = sport_service.get_class("WL", division, weight)
 
-    if pl is not "0":
-        print("plplplpl")
-        pl_query = text("""
-                           SELECT id
-                           FROM classes WHERE sport = 'PL' AND division =:d AND max_weight > :w
-                           ORDER by max_weight ASC
-                           """)
-        result = db.session.execute(pl_query, {"d": division, "w": weight})
-        pl_class = result.fetchone().id
+    if pl != "0":
+        pl_class = sport_service.get_class("PL", division, weight)
 
     if user_service.register(username, pswd_tx, admin, wl_class, pl_class, division, weight):
         return redirect("/")
     return redirect("/register/name")
 
 #Remove user
-@app.route("/removeu/<u_id>", methods=["POST"])
+@app.route("/removeu/<u_id>", methods=["GET"])
 def removeu(u_id):
     if not_login():
         return redirect("/landing")
     if is_admin():
-        query = text(
-            """
-                     DELETE FROM users
-                     WHERE users.id = :id
-
-                """)
-        result = db.session.execute(query, {"id": u_id})
-        db.session.commit()
+        user_service.delete(u_id)
         return redirect("/users")
     return redirect("/")
 
@@ -281,7 +260,7 @@ def send_comp():
         abort(403)
     sport = request.form["sport"]
     name = request.form["name"]
-    if name is "":
+    if name == "":
         return redirect("/cfail")
 
     comp_query = text("""
