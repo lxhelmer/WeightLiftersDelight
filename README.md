@@ -43,7 +43,7 @@ Lataa tietokantarakenne tietokantaan komennolla ohjelma käyttää oletusarvona 
 psql <tietokannan nimi> < schema.sql
 ```
 
-Voit luoda urheilulajit sekä kilpailuluokat seuraavilla komennoilla:
+Voit luoda urheilulajit sekä kilpailuluokat seuraavilla komennoilla, tämä on suositeltua jos et itse täytä luokkia sekä liikkeitä:
 ```bash
 psql <tietokannan nimi> <  create_classes.sql
 psql <tietokannan nimi> <  create_movements.sql
