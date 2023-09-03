@@ -23,9 +23,13 @@ def index(message=""):
     notif = ""
 
     if message == "fail":
-        error = "Failed to add new entry."
+        error = "Failed to add new entry!"
     elif message == "ok":
         notif = "Added new entry!"
+    elif message =="cfail":
+        error = "Failed to add new competition!"
+    elif message =="cadd":
+        notif = "Added new competition!"
     else:
         notif = ""
 
@@ -376,14 +380,14 @@ def send_comp():
     sport = request.form["sport"]
     name = request.form["name"]
     if name is "":
-        return redirect("/")
+        return redirect("/cfail")
 
     comp_query = text("""
                       INSERT INTO competitions (name, sport) VALUES (:n, :s)
                       """)
     db.session.execute(comp_query, {"n": name, "s": sport})
     db.session.commit()
-    return redirect("/")
+    return redirect("/cadd")
 
 
 @app.route("/like/<res_id>", methods=["POST"])
