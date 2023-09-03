@@ -182,8 +182,6 @@ def removeu(u_id):
 # User login
 @app.route("/login", methods=["POST"])
 def login():
-    if session["csrf_token"] != request.form["csrf_token"]:
-        abort(403)
 
     username = request.form["username"]
     pswd_tx = request.form["password"]
