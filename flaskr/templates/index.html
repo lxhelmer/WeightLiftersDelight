@@ -30,6 +30,7 @@
 			<input type = "hidden" id = "Checkhidden" name = "public" value = "0"/>
 			<label for="public">public</label>
 			<br>
+			<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 			<input type="submit" value="add to log" class="btn btn-primary">
 		</form>
 		<hr>

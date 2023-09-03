@@ -39,6 +39,7 @@
 		Competition weight:
 		<input type="number" name="weight">
 		<br>
+		<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 		<input  class="btn btn-primary" type="submit" value="Create">
 	</form>
 </div>

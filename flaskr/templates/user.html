@@ -32,6 +32,7 @@ PL {{viewed.pl_div}}{{viewed.pl_max}}
 		type="radio" name="lift" value="C&J"> Clean & Jerk
 	<input onclick="this.form.submit()"
 		type="radio" name="lift" value="%"> Clear filter
+	<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 
 <form action="/setorder/{{viewed.id}}" method="POST">
@@ -45,6 +46,7 @@ PL {{viewed.pl_div}}{{viewed.pl_max}}
 		</option>
 		{% endfor %}
 	</select>
+	<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 <hr>
 {% for result in results %}

@@ -131,6 +131,8 @@ def user_page(usr_id):
 # Add new user
 @app.route("/newu", methods=["POST"])
 def new_user():
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
 
     username = request.form["nusername"]
     pswd_tx = request.form["password"]
@@ -180,6 +182,9 @@ def removeu(u_id):
 # User login
 @app.route("/login", methods=["POST"])
 def login():
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
+
     username = request.form["username"]
     pswd_tx = request.form["password"]
 
@@ -202,6 +207,8 @@ def logout():
 def send_result():
     if not_login():
         return redirect("/landing")
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
 
     user = session["user"]
     lift = request.form["lift"]
@@ -240,6 +247,8 @@ def like(res_id):
 def comment(res_id):
     if not_login():
         return redirect("/landing")
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     new_comment = request.form["comment"]
     result_service.add_comment(res_id, new_comment)
     return redirect("/result/" + str(res_id))
@@ -249,6 +258,8 @@ def comment(res_id):
 def set_selected(u_id):
     if not_login():
         return redirect("/landing")
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     session["selected"] = request.form["lift"]
     if is_admin():
         return redirect("/user/" + str(u_id))
@@ -259,6 +270,8 @@ def set_selected(u_id):
 def set_order(u_id):
     if not_login():
         return redirect("/landing")
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
     session["order"] = request.form["order"]
     if is_admin():
         return redirect("/user/" + str(u_id))
