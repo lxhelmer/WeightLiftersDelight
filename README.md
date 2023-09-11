@@ -1,3 +1,11 @@
+# Kurssin tietokantasovellus kurssiprojekti
+
+Kurssiarvosana: 5
+Toteutuneet toiminnot voi tarkistaa viimeisestä 3.9 merkatusta lisäyksestä.
+
+## Näyttökuvia valmiista sovelluksesta
+
+    
 # Voimaharjoittelu tietokantasovellus
 Sovelluksessa voidaan tallentaa ja seurata voimaharjottelutuloksia ja niiden kehitystä.
 Tuloksia voi tallentaa liikkeen ja ajankohdan mukaan.
