@@ -5,6 +5,19 @@ Toteutuneet toiminnot voi tarkistaa viimeisestä 3.9 merkatusta lisäyksestä.
 
 ## Näyttökuvia valmiista sovelluksesta
 
+#### Kotisivu
+
+![Kotisivu](https://github.com/lxhelmer/dbcourseprogram/blob/main/examples/Homepage.png)
+
+#### Profiilisivu
+
+![Profiilisivu](https://github.com/lxhelmer/dbcourseprogram/blob/main/examples/Profilepage.png)
+
+#### Käyttäjä listaus
+
+![Käyttäjälista](https://github.com/lxhelmer/dbcourseprogram/blob/main/examples/Userlisting.png)
+
+
     
 # Voimaharjoittelu tietokantasovellus
 Sovelluksessa voidaan tallentaa ja seurata voimaharjottelutuloksia ja niiden kehitystä.
