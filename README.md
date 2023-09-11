@@ -119,6 +119,7 @@ Ominaisuude lopullisessa ohjelmassa:
  
   
 Tämän lisäksi käyttäjää luodessa sekä uutta tulosta lisätessä virheellinen syöte saa aikaan virhekoodin ja tuloksen lisäyksen yhteydessä näytetään viesti onnistumisen merkiksi.
+Sovelluksen ulkonäkö on muotoiltu bootstrap kirjastolla.
 
 
 
@@ -135,4 +136,4 @@ Tämän lisäksi käyttäjää luodessa sekä uutta tulosta lisätessä virheell
 #### Käyttäjä listaus
 
 ![Käyttäjälista](https://github.com/lxhelmer/dbcourseprogram/blob/main/examples/Userlisting.png)
-Sovelluksen ulkonäkö on muotoiltu bootstrap kirjastolla.
+
