@@ -1,23 +1,6 @@
 # Kurssin tietokantasovellus kurssiprojekti
 
-Kurssiarvosana: 5
 Toteutuneet toiminnot voi tarkistaa viimeisestä 3.9 merkatusta lisäyksestä.
-
-## Näyttökuvia valmiista sovelluksesta
-
-#### Kotisivu
-
-![Kotisivu](https://github.com/lxhelmer/dbcourseprogram/blob/main/examples/Homepage.png)
-
-#### Profiilisivu
-
-![Profiilisivu](https://github.com/lxhelmer/dbcourseprogram/blob/main/examples/Profilepage.png)
-
-#### Käyttäjä listaus
-
-![Käyttäjälista](https://github.com/lxhelmer/dbcourseprogram/blob/main/examples/Userlisting.png)
-
-
     
 # Voimaharjoittelu tietokantasovellus
 Sovelluksessa voidaan tallentaa ja seurata voimaharjottelutuloksia ja niiden kehitystä.
@@ -136,4 +119,20 @@ Ominaisuude lopullisessa ohjelmassa:
  
   
 Tämän lisäksi käyttäjää luodessa sekä uutta tulosta lisätessä virheellinen syöte saa aikaan virhekoodin ja tuloksen lisäyksen yhteydessä näytetään viesti onnistumisen merkiksi.
+
+
+
+## Näyttökuvia valmiista sovelluksesta
+
+#### Kotisivu
+
+![Kotisivu](https://github.com/lxhelmer/dbcourseprogram/blob/main/examples/Homepage.png)
+
+#### Profiilisivu
+
+![Profiilisivu](https://github.com/lxhelmer/dbcourseprogram/blob/main/examples/Profilepage.png)
+
+#### Käyttäjä listaus
+
+![Käyttäjälista](https://github.com/lxhelmer/dbcourseprogram/blob/main/examples/Userlisting.png)
 Sovelluksen ulkonäkö on muotoiltu bootstrap kirjastolla.
